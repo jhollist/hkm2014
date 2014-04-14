@@ -1,7 +1,7 @@
-all: PaperPimping.md bloggingTweeting.pdf 
+all: hkm2014.md hkm2014.pdf 
 
-PaperPimping.md: PaperPimping.Rmd
-	Rscript -e "library(knitr); knit('PaperPimping.Rmd')"
+hkm2014.md: hkm2014.Rmd
+	Rscript -e "library(knitr); knit('hkm2014.Rmd')"
 
-bloggingTweeting.pdf: PaperPimping.md bloggingTweeting2.bib
-	pandoc -H format.sty -V fontsize=12pt --bibliography bloggingTweeting2.bib PaperPimping.md -o bloggingTweeting.pdf
+hkm2014.pdf: hkm2014.md hkm2014.bib
+	pandoc -H format.sty -V fontsize=12pt --bibliography hkm2014.bib hkm2014.md -o hkm2014.pdf
