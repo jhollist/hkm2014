@@ -1,0 +1,40 @@
+```{r setup, include=FALSE, echo=FALSE}
+opts_chunk$set(dev = 'pdf', fig.width=6, fig.height=4.3)
+
+```
+Cyano Lakes Paper
+====================================================================
+
+### Jeffrey W. Hollister
+
+*Jeffrey W. Hollister ([hollister.jeff@epa.gov](mailto:hollister.jeff@epa.gov)), US EPA, Office of Research and Development, National Health and Environmental Effects Research Lab, Atlantic Ecology Division, Narragansett, RI, 02882*  
+
+Abstract
+--------
+
+
+#### Keywords:
+
+
+
+Introduction
+------------
+
+ Perhaps a better measure of an articles impact is looking at a broader suite of metrics that, in addition to citations, track how often the paper is viewed, downloaded, and discussed.  The general idea is now referred to as Altmetrics [@Priem2012; @Thelwall2013; @Altmetrics].  NEED MORE STUFF HERE.
+
+
+
+Methods
+-------
+
+
+
+Results and Discussion
+----------------------
+
+Acknowledgements
+----------------
+
+
+References
+----------
