@@ -1,0 +1,42 @@
+\captionof{table}{Nitrogen - 2007}\n % latex table generated in R 2.15.0 by xtable 1.7-1 package
+% Thu Aug 15 13:43:09 2013
+\begin{table}[ht]
+\centering
+\begin{tabular}{rlrrr}
+  \hline
+ & Ecoregion & N & Mean & Std.Dev \\ 
+  \hline
+1 & CPL & 119.00 & 1042.87 & 942.23 \\ 
+  2 & NAP & 122.00 & 409.27 & 494.71 \\ 
+  3 & NPL & 67.00 & 3712.45 & 4355.38 \\ 
+  4 & SAP & 131.00 & 503.31 & 500.25 \\ 
+  5 & SPL & 145.00 & 2012.65 & 3894.55 \\ 
+  6 & TPL & 157.00 & 1826.83 & 1802.70 \\ 
+  7 & UMW & 163.00 & 847.68 & 1261.13 \\ 
+  8 & WMT & 165.00 & 332.76 & 399.59 \\ 
+  9 & XER & 88.00 & 961.52 & 1082.48 \\ 
+   \hline
+\end{tabular}
+\end{table}
+ Table2.tex TRUE FALSE  list(-1, 0, 9)
+\captionof{table}{Nitrogen - 2007}\n % latex table generated in R 2.15.0 by xtable 1.7-1 package
+% Thu Aug 15 13:43:09 2013
+\begin{table}[ht]
+\centering
+\begin{tabular}{rlrrr}
+  \hline
+ & Ecoregion & N & Mean & Std.Dev \\ 
+  \hline
+1 & CPL & 119.00 & 1042.87 & 942.23 \\ 
+  2 & NAP & 122.00 & 409.27 & 494.71 \\ 
+  3 & NPL & 67.00 & 3712.45 & 4355.38 \\ 
+  4 & SAP & 131.00 & 503.31 & 500.25 \\ 
+  5 & SPL & 145.00 & 2012.65 & 3894.55 \\ 
+  6 & TPL & 157.00 & 1826.83 & 1802.70 \\ 
+  7 & UMW & 163.00 & 847.68 & 1261.13 \\ 
+  8 & WMT & 165.00 & 332.76 & 399.59 \\ 
+  9 & XER & 88.00 & 961.52 & 1082.48 \\ 
+   \hline
+\end{tabular}
+\end{table}
+ Table2.tex TRUE FALSE  c("\\toprule\n", "\\midrule\n", "\\bottomrule\n")
