@@ -43,7 +43,18 @@ We defined the surrounding landscape of a lake with four different buffer distan
 
 Chl a Trophic status from NLA.  What are the cut-offs.
 
+### Dimension Reduction
+
+Expert opinion
+Correlation matrix
+random forests on subsets (i.e. buffer sizes)
+
+factor analysis of landscape
+factor analysis of watercolumn
+
 ### Statistical Analyses
+
+
 
 Random Forest
 
