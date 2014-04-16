@@ -27,8 +27,9 @@ var_cor<-c("AlbersX","AlbersY","LakeArea","LakePerim","ShoreDevel","BASINAREA","
 
 
 NLA.sub<-bioV[,var_cor]
-#x<-complete.cases(NLA.sub)
-#NLA.cc<-NLA.sub[x==TRUE,]
+NLA.sub$BALANCE2<-NLA.sub$BALANCE2+16.39
 
-NLA.cor<-cor(NLA.sub[,3:58],na.rm=TRUE)
+
+NLA.cor<-round(cor(log1p(NLA.sub[,3:58]),use="pairwise.complete.obs"),3)
+write.csv(NLA.cor,file="NLACorrelation.csv")
 
