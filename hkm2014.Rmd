@@ -2,7 +2,7 @@
 opts_chunk$set(dev = 'pdf', fig.width=6, fig.height=4.3)
 
 ```
-Environmental Determinants of Lake Trophic Status in the Conterminous United States
+Environmental Determinants of Lake Trophic Status in the Conterminous United States: A Data Mining Approach
 ====================================================================
 
 ### Jeffrey W. Hollister, Betty J. Kreakie, W. Bryan Milstead
@@ -17,7 +17,7 @@ Abstract
 --------
 
 
-#### Keywords: National Lakes Assessment, Cyanobacteria, Chlorophyl a, National Land Cover Dataset, Random Forest
+#### Keywords: National Lakes Assessment, Cyanobacteria, Chlorophyl a, National Land Cover Dataset, Random Forest, Data Mining
 
 
 
@@ -48,18 +48,23 @@ Adding to the monitoring data collected via the NLA, we use the 2006 NLCD data t
 
 #### Possible Predictor Variables
 
-**Lake Properties**
+There are many possible variables that may be predictive of trophic status and thus could be included in our analysis.  We considered variables describing general lake properties, water column properties and land use/land cover of the surrounding landscape.
+
+*Lake Properties*
+
 - Morphometry
 - Lat, Long
 - Ecoregion
+- growing degree days
 
-**Water Column**
+*Water Column*
+
 - N
 - P
 - Temp
 - etc.
 
-**Landscape**
+*Landscape*
 
 We defined the surrounding landscape of a lake with four different buffer distances: maximum in-lake distance [@hollister_predicting_2011], 300 meters, 1500 meters, and 2500 meters.  The various distances were used to tease out differences in local landscape effects versus larger landscape-level effects. For each of these distances, we used the National Land Cover Dataset (NLCD) and calculated the percent impervious and total area of each land cover class.  
 
@@ -70,24 +75,19 @@ We defined the surrounding landscape of a lake with four different buffer distan
 
 ### Variable Selection
 
-- Expert opinion
-- Correlation matrix
-- random forests on subsets (i.e. buffer sizes)
-
-- factor analysis of landscape
-- factor analysis of water column
+Prior to running the random forest models we need to reduce the total number of variables from the original *gazillion*.  To do this we examine the correlation between log transformed chlorophyll a concentration and each of the log transformed variables.  The rationale behind this selection method is to discard variables with little to no association with chlorphyll a and thus trophic state.  Variables with a pairwise correlation with chlorphyll a of less than 0.XXX were removed from further consideration
 
 ### Random Forest
 
 - background on random forest modelling
 - why we are using it
 
-**Variable Importance**
+*Variable Importance*
 
 - How to use for variable selection
 - what we used to identify important variables
 
-**Predicted Trophic State** 
+*Predicted Trophic State*
 
 - How random forests makes final predictions, 
 - what we used to assess accuracy, etc.
@@ -111,13 +111,13 @@ Results
 
 - Summary of Random Forest model (number of Params, total oob, etc.)
 
-**Variable Importance**
+*Variable Importance*
 
 - Narrative description of variables.
 
 - Table of Variables with gini or percent explained.
 
-**Predicted Trophic State**
+*Predicted Trophic State*
 
 - Summary stats of percent of lakes in each class
 - Confusion matrix of predicted with actual.
