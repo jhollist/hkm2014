@@ -24,6 +24,7 @@ Abstract
 Introduction
 ------------
 
+Productivity in lentic systems is often categorized across a range of tropic states from early succesional lakes - oligotrophic - to late succussional - hypereutrophic.
 - Trophic State related to stuff we care about
 - Largely determined by primary productivity and thus can be estimate with Chl a (among others)
 - Most studies of trophic state are limited in spatial extent and don't look for broad scale patterns of variables that drive trophic state
