@@ -2,74 +2,136 @@
 opts_chunk$set(dev = 'pdf', fig.width=6, fig.height=4.3)
 
 ```
-Environmental Determinants of Lake Trophic Status in the Conterminus United States
+Environmental Determinants of Lake Trophic Status in the Conterminous United States
 ====================================================================
 
 ### Jeffrey W. Hollister, Betty J. Kreakie, W. Bryan Milstead
 
 *Jeffrey W. Hollister ([hollister.jeff@epa.gov](mailto:hollister.jeff@epa.gov)), US EPA, Office of Research and Development, National Health and Environmental Effects Research Lab, Atlantic Ecology Division, Narragansett, RI, 02882*  
 
+*Betty J. Kreakie ([kreakie.betty@epa.gov](mailto:kreakie.betty@epa.gov)), US EPA, Office of Research and Development, National Health and Environmental Effects Research Lab, Atlantic Ecology Division, Narragansett, RI, 02882*  
+
+*W. Bryan Milstead ([milstead.bryan@epa.gov](mailto:milstead.bryan@epa.gov)), US EPA, Office of Research and Development, National Health and Environmental Effects Research Lab, Atlantic Ecology Division, Narragansett, RI, 02882*  
+
 Abstract
 --------
 
 
-#### Keywords: National Lakes Assessment, Cyanobacteria, Chlorophyl a
+#### Keywords: National Lakes Assessment, Cyanobacteria, Chlorophyl a, National Land Cover Dataset, Random Forest
 
 
 
 Introduction
 ------------
 
+- Trophic State related to stuff we care about
+- Largely determined by primary productivity and thus can be estimate with Chl a (among others)
+- Most studies of trophic state are limited in spatial extent and don't look for broad scale patterns of variables that drive trophic state
+- Most studies of trophic state focus on in-lake variables (i.e. nurients), limited ability to predict over large regions
+- We take advanatage of one the first complete national scale efforts monitoring lakes to try and discern broad patterns in both in-lake parameters that drive trophic state and landscape level parameters that might also drive trophic state
+- Our primary question is, at the national scale, what are the primary determinants of lake trophic status? 
+- Can those determinants be used to predict trophic state with an acceptable level of accuracy?
 
-What are the primary determinants of lake trophic status?  Determinants include, chemical and physical paramenters of the lake water column and land use/land cover.  Lake trophic status defined by Chl a.
+Determinants include, chemical and physical parameters of the lake water column and land use/land cover.  Lake trophic status defined by Chl a.
 
 
 Methods
 -------
 
-### Data
+### Data and Study Area
 
-The two primary sources of data for this study are the National Lakes Assesment data and the National Land Cover Dataset [@usepa2009national]
+The two primary sources of data for this study are the National Lakes Assessment (NLA) data and the National Land Cover Dataset (NLCD) [@usepa2009national]. Both datasets are national in scale and provide a unique snapshot view of the condition of United States' lakes and the patterns of the lakes surrounding landscape.  
 
-#### Predictor Variables
+The NLA data were collected during the summer of 2007 and the final data were released in 200X.  With consistent methods and metrics collected at 1056 locations across the conterminous United States, the NLA provides a unique opportunity to examine continental scale patterns in lake productivity.  MORE ON NLA.
+
+Adding to the monitoring data collected via the NLA, we use the 2006 NLCD data to examine the possible landscape-level drivers of trophic status in lakes.  MORE ON NLCD.
+
+#### Possible Predictor Variables
+
+**Lake Properties**
+- Morphometry
+- Lat, Long
+- Ecoregion
 
 **Water Column**
-N,P
+- N
+- P
+- Temp
+- etc.
 
 **Landscape**
 
-We defined the surrounding landscape of a lake with four different buffer distances: maximum in-lake distance [@hollister_predicting_2011], 300 meters, 1500 meters, and 2500 meters.  The various distances were used to tease out differences in local landscape effects versus larger landscape-level effects. For each of these distances, we used the National Land Cover Dataset (NLCD) and calculated the percent impervious and total area of each landcover class.  
+We defined the surrounding landscape of a lake with four different buffer distances: maximum in-lake distance [@hollister_predicting_2011], 300 meters, 1500 meters, and 2500 meters.  The various distances were used to tease out differences in local landscape effects versus larger landscape-level effects. For each of these distances, we used the National Land Cover Dataset (NLCD) and calculated the percent impervious and total area of each land cover class.  
 
 #### Independent Variables
 
-Chl a Trophic status from NLA.  What are the cut-offs.
+- Chl a Trophic status from NLA.  
+- What are the cut-offs.
 
-### Dimension Reduction
+### Variable Selection
 
-Expert opinion
-Correlation matrix
-random forests on subsets (i.e. buffer sizes)
+- Expert opinion
+- Correlation matrix
+- random forests on subsets (i.e. buffer sizes)
 
-factor analysis of landscape
-factor analysis of watercolumn
+- factor analysis of landscape
+- factor analysis of water column
 
-### Statistical Analyses
+### Random Forest
+
+- background on random forest modelling
+- why we are using it
+
+**Variable Importance**
+
+- How to use for variable selection
+- what we used to identify important variables
+
+**Predicted Trophic State** 
+
+- How random forests makes final predictions, 
+- what we used to assess accuracy, etc.
 
 
+Results
+-------
 
-Random Forest
+### Summary Statistics
 
-variable selection
-TS Probability
+- Narrative summary. 
+- Table
 
-PCA
-visualization
+### Variable Selection
 
+- Which variables were selected to include, and why, in the Random Forest.  
+- Table. 
+- Pairs plot of selected variables showing little/weak association between selected variables.
 
+### Random Forest 
 
+- Summary of Random Forest model (number of Params, total oob, etc.)
 
-Results and Discussion
-----------------------
+**Variable Importance**
+
+- Narrative description of variables.
+
+- Table of Variables with gini or percent explained.
+
+**Predicted Trophic State**
+
+- Summary stats of percent of lakes in each class
+- Confusion matrix of predicted with actual.
+
+Discussion
+----------
+
+- What worked
+- What didnt
+- What are the determinants and why improtant
+ - How can this be expanded to other non-monitored lakes?
+- What else can Trophic State tell us?
+ - Cyanobacteria association with? 
+ - CDF Plots
 
 Acknowledgements
 ----------------
