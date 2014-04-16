@@ -75,7 +75,7 @@ We defined the surrounding landscape of a lake with four different buffer distan
 
 ### Variable Selection
 
-Prior to running the random forest models we need to reduce the total number of variables from the original *gazillion*.  To do this we examine the correlation between log transformed chlorophyll a concentration and each of the log transformed variables.  The rationale behind this selection method is to discard variables with little to no association with chlorphyll a and thus trophic state.  Variables with a pairwise correlation with chlorphyll a of less than 0.XXX were removed from further consideration
+Prior to running the random forest models we need to reduce the total number of variables from the original *gazillion*.  To do this we examine the correlation between log transformed chlorophyll a concentration and each of the log transformed variables.  The rationale behind this selection method is to discard variables with little to no association with chlorphyll a and thus trophic state.  Variables with a pairwise correlation with chlorphyll a of less than 0.XXX were removed from further consideration.  Additionally, predictor variables that are highly correlated with one another should not be included in the initial set of variables passed to the random forest [NEED REF].  As such we examine the pairwise correlations of the remaining variables and make a determination of which variables to retain for use in the random forest.
 
 ### Random Forest
 
