@@ -49,7 +49,7 @@ The NLA data were collected during the summer of 2007 and the final data were re
 
 Adding to the monitoring data collected via the NLA, we use the 2006 NLCD data to examine the possible landscape-level drivers of trophic status in lakes.  The NLCD is a nationally collected land use land cover dataset that also provides estimates of impervious surface.  We collected total land use land cover and total percent impervious surface within the surroundin landscape of the lake.  We defined the surrounding landscape of a lake with three different buffer distances: 300 meters, 1500 meters, and 2500 meters.  The various distances were used to tease out differences in local landscape effects versus larger landscape-level effects. 
 
-#### Independent Variables
+### Defining Trophic State
 
 - Chl a Trophic status from NLA.  
 - What are the cut-offs.
