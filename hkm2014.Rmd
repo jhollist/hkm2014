@@ -69,7 +69,7 @@ A strength of random forest is its ability to handle numerous correlated variabl
 
 ### Random Forest
 
-As stated above, our goal is to explore relative variable importance in determination of lake trophic status.  We selected random forest as statistical approach since the random forest provides a robust measure of variable importance.  Random forest is a machine learning algorithm that aggregates numerous decision trees in order to obtain to a consensus prediction of response categories.  For every tree in the forest, the sample data are bootstrapped and subsets of predictor variables are randomly selected.  Tree bifurcations are based on the best splits given the random subset of predictor variables and grown without pruning.   
+As stated above, our goal is to explore relative variable importance in determination of lake trophic status.  We selected random forest as the statistical analysis approach since random forest provides a robust measure of variable importance.  Random forest is a machine learning algorithm that aggregates numerous decision trees in order to obtain to a consensus prediction of response categories.  For every tree in the forest, the sample data are bootstrapped and subsets of predictor variables are randomly selected.  Tree bifurcations are based on the best splits given the random subset of predictor variables and grown without pruning.   
 
 *Variable Importance*
 
