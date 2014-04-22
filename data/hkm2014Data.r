@@ -4,7 +4,7 @@ v<-'HMK2014data.r'
 	#get lakeNLCD data
 		#data definitions
 			browseURL('https://github.com/jhollist/cyanoLakes/blob/master/bryan/calcNLCD_ByLakeBuffer.md')
-					https://raw.githubusercontent.com/jhollist/cyanoLakes/master/bryan/calcNLCD_ByLakeBuffer.md
+
 		#load data -df name is "lakeNLCD"
 			load(url('https://github.com/jhollist/cyanoLakes/raw/master/bryan/calcNLCD_ByLakeBuffer.RDA'))
 
@@ -53,9 +53,20 @@ v<-'HMK2014data.r'
 									'NH4ION','CATSUM','ANSUM2','ANDEF2','SOBC','BALANCE2','ORGION','CONCAL2',
 									'CONDHO2','SECMEAN','TminW','TmaxW','TmeanW','DDs40','DDs45','DDs50','DDs55',
 									'MaxLength','MaxWidth','MeanWidth','FetchN','FetchNE','FetchE','FetchSE',
-									'MaxDepthCorrect','VolumeCorrect','MeanDepthCorrect','TS_NTL','TS_PTL','TS_CHLA')
-			keep<-VarNames1[-c(2,3)]
+									'MaxDepthCorrect','VolumeCorrect','MeanDepthCorrect','TS_NTL','TS_PTL',
+									'TS_CHLA','Microcystin_ugl','WHO_Category')
+			keep<-VarNames1[-c(2,67,68)]
 	#merge bioV and the NLCD data
 		hkm2014Data<-merge(a,bioV[,keep],all.x=T)
+
+##################save the data
+save(hkm2014Data,file='./data/hkm2014Data.rda')  
+
+
+####################Load the hkm2014Data
+#Data Definitions:  
+browseURL('https://github.com/jhollist/hkm2014/blob/master/data/hkm2014Data.md')
+#Get the hkm2014Data
+load(url('https://raw.github.com/jhollist/hkm2014/master/data/hkm2014Data.rda'))
 
 

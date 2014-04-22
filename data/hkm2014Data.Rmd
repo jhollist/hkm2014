@@ -63,6 +63,7 @@ PasturePer_BuffDist | Percent (proportion*100) of lake buffer categorized as NLC
 CropsPer_BuffDist | Percent (proportion*100) of lake buffer categorized as NLCD(2006) code=82:  Cultivated Crops - Areas used for the production of annual crops, such as corn, soybeans, vegetables, tobacco, and cotton, and also perennial woody crops such as orchards and vineyards. Crop vegetation accounts for greater than 20 percent of total vegetation. This class also includes all land being actively tilled.
 WoodyWetPer_BuffDist | Percent (proportion*100) of lake buffer categorized as NLCD(2006) code=90:  Woody Wetlands - Areas where forest or shrub land vegetation accounts for greater than 20 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water.
 HerbWetPer_BuffDist | Percent (proportion*100) of lake buffer categorized as NLCD(2006) code=95:  Emergent Herbaceous Wetlands - Areas where perennial herbaceous vegetation accounts for greater than 80 percent of vegetative cover and the soil or substrate is periodically saturated with or covered with water.
+bvCat|Cyanobiovolume category; Ordered Factor; Low=1st Q, Med=Q2 & Q3, High=4th Q
 AlbersX|(m) ESRI USA Contiguous Albers Equal Area Conic X coordinate in from National_LakePoly.shp
 AlbersY|(m) ESRI USA Contiguous Albers Equal Area Conic Y coordinate in from National_LakePoly.shp
 LakeArea|(km2) Lake Area from attribute table of from National_LakePoly.shp
