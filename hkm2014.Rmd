@@ -1,12 +1,12 @@
 ```{r setup, include=FALSE, echo=FALSE}
 opts_chunk$set(dev = 'pdf', fig.width=6, fig.height=4.3)
-
+devtools::install_github("hkm","jhollist")
 ```
 
 Environmental Determinants of Lake Trophic Status in the Conterminous United States: A Data Mining Approach
 ====================================================================
 
-### Jeffrey W. Hollister, Betty J. Kreakie, W. Bryan Milstead
+## Jeffrey W. Hollister, Betty J. Kreakie, W. Bryan Milstead
 
 *Jeffrey W. Hollister ([hollister.jeff@epa.gov](mailto:hollister.jeff@epa.gov)), US EPA, Office of Research and Development, National Health and Environmental Effects Research Lab, Atlantic Ecology Division, Narragansett, RI, 02882*  
 
@@ -48,12 +48,13 @@ Methods
 
 The two primary sources of data for this study are the National Lakes Assessment (NLA) data and the National Land Cover Dataset (NLCD) [@usepa2009national]. Both datasets are national in scale and provide a unique snapshot view of the condition of United States' lakes and the patterns of the lakes surrounding landscape.  
 
-The NLA data were collected during the summer of 2007 and the final data were released in 2009.  With consistent methods and metrics collected at 1056 locations across the conterminous United States, the NLA provides a unique opportunity to examine continental scale patterns in lake productivity.  The NLA collected data on biophysical meausers of lake water quality and habitat.  For this analysis we primarily examined the water quality measurements from the NLA [TABLE REF].
+The NLA data were collected during the summer of 2007 and the final data were released in 2009.  With consistent methods and metrics collected at 1056 locations across the conterminous United States, the NLA provides a unique opportunity to examine continental scale patterns in lake productivity.  The NLA collected data on biophysical meausres of lake water quality and habitat.  For this analysis we primarily examined the water quality measurements from the NLA [TABLE REF].
 
 ```{r allParamatersTable, echo=FALSE}
+
 ```
 
-Adding to the monitoring data collected via the NLA, we use the 2006 NLCD data to examine the possible landscape-level drivers of trophic status in lakes.  The NLCD is a nationally collected land use land cover dataset that also provides estimates of impervious surface.  We collected total land use land cover and total percent impervious surface within the surroundin landscape of the lake.  We defined the surrounding landscape of a lake with three different buffer distances: 300 meters, 1500 meters, and 2500 meters.  The various distances were used to tease out differences in local landscape effects versus larger landscape-level effects. 
+Adding to the monitoring data collected via the NLA, we use the 2006 NLCD data to examine the possible landscape-level drivers of trophic status in lakes.  The NLCD is a nationally collected land use land cover dataset that also provides estimates of impervious surface.  We collected total land use land cover and total percent impervious surface within the surroundin landscape of the lake [TABLE REF].  We defined the surrounding landscape of a lake with three different buffer distances: 300 meters, 1500 meters, and 2500 meters.  The various distances were used to tease out differences in local landscape effects versus larger landscape-level effects. 
 
 ### Defining Trophic State
 
