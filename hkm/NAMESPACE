@@ -1,3 +1,2 @@
 export(chlaCorSel)
-export(getData)
 export(getDataDefinition)

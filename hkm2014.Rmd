@@ -1,6 +1,7 @@
 ```{r setup, include=FALSE, echo=FALSE}
 opts_chunk$set(dev = 'pdf', fig.width=6, fig.height=4.3)
 devtools::install_github("hkm","jhollist")
+data(hkm2014Data)
 ```
 
 Environmental Determinants of Lake Trophic Status in the Conterminous United States: A Data Mining Approach
