@@ -1,4 +1,4 @@
-##4-21-2014: intial correlation test and random forest
+##4-21-2014: intial correlation test for variable selection
 **This data set contains one data.frame "hkm2014"
 
 ************
@@ -23,14 +23,44 @@ Data.play<-hkm2014Data
 Data.play$BALANCE2<-Data.play$BALANCE2+16.39
 
 
-MaxDist.cor<-round(cor(log1p(Data.play[,c(3:39,158)]),use="pairwise.complete.obs"),3)
-Buffer300m.cor<-round(cor(log1p(Data.play[,c(40:75,158)]),use="pairwise.complete.obs"),3)
-Buffer1500m.cor<-round(cor(log1p(Data.play[,c(76:111,158)]),use="pairwise.complete.obs"),3)
-Buffer3000m.cor<-round(cor(log1p(Data.play[,c(112:147,158)]),use="pairwise.complete.obs"),3)
-WQ.cor<-round(cor(log1p(Data.play[,WQ.var]),use="pairwise.complete.obs"),3)
+###Creating transformed percent data sets
+MaxDistPerTrans.data<-asin(sqrt((Data.play[,c(4,23:39)])/100))
+MaxDistPerTrans.data<-cbind(MaxDistPerTrans.data,log1p(Data.play[,158]))
 
-write.csv(MaxDist.cor,file="MaxDistCor.csv")
-write.csv(Buffer300m.cor,file="Buffer300mCor.csv")
-write.csv(Buffer1500m.cor,file="Buffer1500mCor.csv")
-write.csv(Buffer3000m.cor,file="Buffer3000mCor.csv")
-write.csv(WQ.cor,file="WQCor.csv")
+
+Buffer300PerTrans.data<-asin(sqrt((Data.play[,c(40,59:75)])/100))
+Buffer300PerTrans.data<-cbind(Buffer300PerTrans.data,log1p(Data.play[,158]))
+
+Buffer1500PerTrans.data<-asin(sqrt((Data.play[,c(76,95:111)])/100))
+Buffer1500PerTrans.data<-cbind(Buffer1500PerTrans.data,log1p(Data.play[,158]))
+
+Buffer3000PerTrans.data<-asin(sqrt((Data.play[,c(112,131:147)])/100))
+Buffer3000PerTrans.data<-cbind(Buffer1500PerTrans.data,log1p(Data.play[,158]))
+
+##Running correlations
+MaxDistKM2.cor<-round(cor(log1p(Data.play[,c(5,7:22,158)]),use="pairwise.complete.obs"),3)
+MaxDistPer.cor<-round(cor(MaxDistPerTrans.data,use="pairwise.complete.obs"),3)
+
+Buffer300KM2.cor<-round(cor(log1p(Data.play[,c(41,43:58,158)]),use="pairwise.complete.obs"),3)
+Buffer300Per.cor<-round(cor(Buffer300PerTrans.data,use="pairwise.complete.obs"),3)
+
+Buffer1500KM2.cor<-round(cor(log1p(Data.play[,c(77,79:94,158)]),use="pairwise.complete.obs"),3)
+Buffer1500Per.cor<-round(cor(Buffer1500PerTrans.data,use="pairwise.complete.obs"),3)
+
+Buffer3000KM2.cor<-round(cor(log1p(Data.play[,c(113,115:130)]),use="pairwise.complete.obs"),3)
+Buffer3000Per.cor<-round(cor(Buffer3000PerTrans.data,use="pairwise.complete.obs"),3)
+
+
+
+
+
+write.csv(MaxDistKM2.cor,file="MaxDistKM2Cor.csv")
+write.csv(Buffer300KM2.cor,file="Buffer300KM2Cor.csv")
+write.csv(Buffer1500KM2.cor,file="Buffer1500KM2Cor.csv")
+write.csv(Buffer300KM2.cor,file="Buffer3000KM2Cor.csv")
+
+write.csv(MaxDistPer.cor,file="MaxDistPerCor.csv")
+write.csv(Buffer300Per.cor,file="Buffer300PerCor.csv")
+write.csv(Buffer1500Per.cor,file="Buffer1500PerCor.csv")
+write.csv(Buffer300Per.cor,file="Buffer3000PerCor.csv")
+
