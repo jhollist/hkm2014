@@ -36,11 +36,13 @@ lapply(libs,function(x) installLoad(x))  #Load/Install require packages
 				FRAC<-.1
    #TS_CHLA all variables
 				vsChla_all<- varSelRF(pChla_all, Chla, ntree=NTREE, ntreeIterat=NTREEi,vars.drop.frac=FRAC)
+					save(vsChla_all,file='./data/vsChla_all.rda') 
 					vsChla_all  #results
 					#plot(vsChla_all) #plots
 		
 #TS_CHLA GIS variables
 				vsChla_gis<- varSelRF(pChla_gis, Chla, ntree=NTREE, ntreeIterat=NTREEi,vars.drop.frac=FRAC)
+					save(vsChla_gis,file='./data/vsChla_gis.rda') 
 					vsChla_gis  #results
 					#plot(vsChla_gis) #plots
 
@@ -60,11 +62,13 @@ lapply(libs,function(x) installLoad(x))  #Load/Install require packages
 				FRAC<-.1
 #bvCat all variables
 	vsbvCat_all<- varSelRF(pbvCat_all, bvCat, ntree=NTREE, ntreeIterat=NTREEi,vars.drop.frac=FRAC)
+		save(vsbvCat_all,file='./data/vsbvCat_all.rda') 
 		vsbvCat_all  #results
 		#plot(vsbvCat_all) #plots
 
 #bvCat GIS variables
 	vsbvCat_gis<- varSelRF(pbvCat_gis, bvCat, ntree=NTREE, ntreeIterat=NTREEi,vars.drop.frac=FRAC)
+		save(vsbvCat_gis,file='./data/vsbvCat_gis.rda') 
 		vsbvCat_gis  #results
 		#plot(vsbvCat_gis) #plots
 
