@@ -7,13 +7,16 @@ output: pdf_document
 
 ```{r setup, include=FALSE, echo=FALSE}
 library(hkm)
+library(varSelRF)
 data(hkm2014Data)
 ```
 
-This document represents the various modeling efforts we have tried for the HKM2014 paper.  First step in this analyis is to set up the groups of variables.  Four groups, plus the Trophic State response variable were initially indentified.  First, are the water quality variables from NLA plus a few other derived variables (i.e. bioVolumes, TS, etc).
+This document represents the various modeling efforts we have tried for the HKM2014 paper.  First step in this analyis is to set up the groups of variables.  Four groups, plus the Trophic State response variable were initially indentified.  
+
+First, are the water quality variables from NLA.
 
 ```{r nlaWaterQual,echo=FALSE}
-nlawqNames<-names(hkm2014Data)[c(1:2,148,154:194)]
+nlawqNames<-names(hkm2014Data)[c(155:158,160:194)]
 nlawqNames
 ```
 
@@ -24,16 +27,18 @@ gisNames<-names(hkm2014Data[c(3,149:153,195:208)])
 gisNames
 ```
 
-Third, are the landscape variables based on total area (including percent impervious)
+Third, are the landscape variables based on total area
 
 ```{r lulcVariablesArea, echo=FALSE}
-lulcAreaNames<-names(hkm2014Data[c(4,grep("Km2_",names(hkm2014Data)))])
+lulcAreaNames<-names(hkm2014Data[grep("Km2_",names(hkm2014Data))])
+if(length(grep("NA_",lulcAreaNames))>0){lulcAreaNames<-lulcAreaNames[-grep("NA_",lulcAreaNames)]}
 lulcAreaNames
 ```
 
-Fourth, the perecent landscape variables (also inlcluding percent impervious) 
+Fourth, the percent landscape variables (also inlcluding percent impervious) 
 ```{r lulcVariablesPerc, echo=FALSE}
-lulcPercentNames<-names(hkm2014Data[c(4,grep("Per_",names(hkm2014Data)))])
+lulcPercentNames<-names(hkm2014Data[c(grep("PercentImperv",names(hkm2014Data)),grep("Per_",names(hkm2014Data)))])
+if(length(grep("NA_",lulcPercentNames))>0){lulcPercentNames<-lulcPercentNames[-grep("NA_",lulcPercentNames)]}
 lulcPercentNames
 ```
 
@@ -49,7 +54,10 @@ respName
 This first random forest predicts Cholorophyl Trophic status using all NLA variables, all GIS variables except for the landscape variables w
 
 ```{r allLandscapeArea}
-
+allVarDF<-na.omit(hkm2014Data[,c(nlawqNames,gisNames,lulcAreaNames,respName)])
+allArea_varsel<-varSelRF(allVarDF[,1:dim(allVarDF)[2]-1],allVarDF[,respName],ntree = 100, ntreeIterat = 50,vars.drop.frac = 0.2)
+allArea_varsel
+plot(allArea_varsel)[2]
 ```
 
 
