@@ -5,9 +5,44 @@ date: "Wednesday, April 23, 2014"
 output: pdf_document
 ---
 
-This document represents the various modeling efforts we have tried for the HKM2014 paper.  First step in this analyis is to set up the groups of variables.  Four groups were initiall indentified.  First, are the water quality variables from NLA.
+```{r setup, include=FALSE, echo=FALSE}
+library(hkm)
+data(hkm2014Data)
+```
 
+This document represents the various modeling efforts we have tried for the HKM2014 paper.  First step in this analyis is to set up the groups of variables.  Four groups, plus the Trophic State response variable were initially indentified.  First, are the water quality variables from NLA plus a few other derived variables (i.e. bioVolumes, TS, etc).
 
+```{r nlaWaterQual,echo=FALSE}
+nlawqNames<-names(hkm2014Data)[c(1:2,148,154:194)]
+nlawqNames
+```
+
+Second,are the GIS based variables
+
+```{r gisVariables, echo=FALSE}
+gisNames<-names(hkm2014Data[c(3,149:153,195:208)])
+gisNames
+```
+
+Third, are the landscape variables based on total area (including percent impervious)
+
+```{r lulcVariablesArea, echo=FALSE}
+lulcAreaNames<-names(hkm2014Data[c(4,grep("Km2_",names(hkm2014Data)))])
+lulcAreaNames
+```
+
+Fourth, the perecent landscape variables (also inlcluding percent impervious) 
+```{r lulcVariablesPerc, echo=FALSE}
+lulcPercentNames<-names(hkm2014Data[c(4,grep("Per_",names(hkm2014Data)))])
+lulcPercentNames
+```
+
+Lastly, the response variable
+
+```{r response, echo=FALSE}
+respName<-"TS_CHLA"
+respName
+```
 
 ## All Variables - Landscape Total Area
 
