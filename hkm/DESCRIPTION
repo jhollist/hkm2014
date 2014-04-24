@@ -9,6 +9,4 @@ Description: This package contains the raw data and analyses for the paper:
     "Environmental Determinants of Lake Trophic Status in the Conterminous
     United States: A Data Mining Approach" by Hollister, Kreakie, and Milstead.
 License: file LICENSE
-Depends:
-    randomForest
-    varSelRF
+Depends:randomForest, varSelRF
