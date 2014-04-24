@@ -6,6 +6,7 @@ output: pdf_document
 ---
 
 ```{r setup, include=FALSE, echo=FALSE, cache=FALSE}
+devtools::install_github("hkm","jhollist")
 library(hkm)
 library(varSelRF)
 data(hkm2014Data)
