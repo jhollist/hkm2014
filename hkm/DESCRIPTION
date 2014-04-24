@@ -11,3 +11,4 @@ Description: This package contains the raw data and analyses for the paper:
 License: file LICENSE
 Depends:
     randomForest
+    varSelRF
