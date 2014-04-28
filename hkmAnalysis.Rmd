@@ -24,12 +24,58 @@ data(hkm2014Data)
 4.Turbidity, not secchi - because turb is an instrument measure and not limited by depth of lake.  If need be Turb could be converted to and estimated secchi.
 
 
+```{r predictorSelection, echo=FALSE, cache=FALSE} 
+	#select the predictor variable
+		omit<-unique(c(grep("NLA_ID",names(hkm2014Data)),  #NLA_ID
+						grep("Comid",names(hkm2014Data)),				 #Comid
+						grep("NA_",names(hkm2014Data)),          #NA tabulations for Landscape variables
+						grep("MaxDist",names(hkm2014Data)),      #MaxDist Buffer Variables
+						grep("1500m",names(hkm2014Data)),        #1500m Buffer Variables
+						grep("Km2",names(hkm2014Data)),					 #Buffer Variables tabulated as area
+						grep("DDs",names(hkm2014Data))[-2],      #Degree Days variables-keep DDs45
+						grep("Tm",names(hkm2014Data))[-3],       #Water Temp variables-keep TmeanW
+						grep("SECMEAN",names(hkm2014Data))[-3],  #SECMEAN dropped-using TURB instead
+						grep("CHLA",names(hkm2014Data))[-3],     #CHLA dropped; it is the response variable
+						grep("TS_",names(hkm2014Data))))         #Trophic State Classification Variables
+	Pvar<-hkm2014Data[,-omit]  #df with the predictor variables.
+```
+
 ### Analysis 1. Compare classic linear models to random forest models?
 
 1.Chl a ~ TP (converted to TS)
 2.Chl a ~ TN (converted to TS)
 3.Chl a ~ TN + TP (converted to TS)
 4.Chl a ~ Linear Mod with varSelRF variables (converted to TS)
+
+```{r linearModels, echo=FALSE, cache=FALSE} 
+	#select complete cases
+		keep<-complete.cases(Pvar,hkm2014Data$TS_CHLA)
+	#run rf
+		varSelAll<-varSelRF(Pvar[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = 10000, 
+												 ntreeIterat = 5000, vars.drop.frac = 0.2)
+	#view results
+		varSelAll  #Selected variables: "NTL"      "PTL"      "TOC"      "TURB"     "WSA_ECO9"
+		summary(varSelAll$selec.history)
+		plot(varSelAll, which=2)
+
+	#run linear models
+		Vars<-c('CHLA','NTL','PTL','TOC','TURB') #select vars for linear model
+		LMdata<-log(hkm2014Data[,Vars]) #log transform data
+			names(LMdata)<-paste('ln',Vars,sep='')
+  
+	Formula1 <- formula(paste(names(LMdata)[1],'~',paste(names(LMdata)[2], collapse="+"))) 
+	Formula2 <- formula(paste(names(LMdata)[1],'~',paste(names(LMdata)[3], collapse="+"))) 
+	Formula3 <- formula(paste(names(LMdata)[1],'~',paste(names(LMdata)[2:3], collapse="+"))) 
+	Formula4 <- formula(paste(names(LMdata)[1],'~',paste(names(LMdata)[-1], collapse="+")))  
+
+	summary(lm(Formula1,data=LMdata))  #adjR2==.5216
+	summary(lm(Formula2,data=LMdata))  #adjR2==.5245
+	summary(lm(Formula3,data=LMdata))  #adjR2==.5785
+	summary(lm(Formula4,data=LMdata))  #adjR2==.6482
+
+```
+
+
 5.Chl a TS ~ RF(varSelRF variables) - single randomForest run
 6.Chl a TS ~ Random Forest Consensus - single randomForest run
 
