@@ -1,0 +1,23 @@
+---
+title: "Analysis for Hollister, Kreakie, Milstead"
+author: "Jeff Hollister, Betty Kreakie, Bryan Milstead"
+date: "Monday, April 28, 2014"
+output: pdf_document
+---
+
+```{r setup, include=FALSE, echo=FALSE, cache=TRUE}
+devtools::install_github("hkm","jhollist")
+library(hkm)
+library(varSelRF)
+data(hkm2014Data)
+```
+
+
+```{r names, echo=FALSE, cache=TRUE}
+nlawqNames<-names(hkm2014Data)[c(155:158,160:194)]
+gisNames<-names(hkm2014Data[c(3,149:153,195:208)])
+lulcPercentNames<-names(hkm2014Data[c(grep("PercentImperv",names(hkm2014Data)),grep("Per_",names(hkm2014Data)))])
+if(length(grep("NA_",lulcPercentNames))>0){lulcPercentNames<-lulcPercentNames[-grep("NA_",lulcPercentNames)]}
+respName<-"TS_CHLA"
+```
+
