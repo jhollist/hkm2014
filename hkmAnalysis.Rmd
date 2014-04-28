@@ -58,21 +58,21 @@ data(hkm2014Data)
 		summary(varSelAll$selec.history)
 		plot(varSelAll, which=2)
 
-	#run linear models
+	#select data for linear models
 		Vars<-c('CHLA','NTL','PTL','TOC','TURB') #select vars for linear model
 		LMdata<-log(hkm2014Data[,Vars]) #log transform data
 			names(LMdata)<-paste('ln',Vars,sep='')
-  
-	Formula1 <- formula(paste(names(LMdata)[1],'~',paste(names(LMdata)[2], collapse="+"))) 
-	Formula2 <- formula(paste(names(LMdata)[1],'~',paste(names(LMdata)[3], collapse="+"))) 
-	Formula3 <- formula(paste(names(LMdata)[1],'~',paste(names(LMdata)[2:3], collapse="+"))) 
-	Formula4 <- formula(paste(names(LMdata)[1],'~',paste(names(LMdata)[-1], collapse="+")))  
 
-	summary(lm(Formula1,data=LMdata))  #adjR2==.5216
-	summary(lm(Formula2,data=LMdata))  #adjR2==.5245
-	summary(lm(Formula3,data=LMdata))  #adjR2==.5785
-	summary(lm(Formula4,data=LMdata))  #adjR2==.6482
+	#run linear models  
+		Formula1 <- formula(paste(names(LMdata)[1],'~',paste(names(LMdata)[2], collapse="+"))) 
+		Formula2 <- formula(paste(names(LMdata)[1],'~',paste(names(LMdata)[3], collapse="+"))) 
+		Formula3 <- formula(paste(names(LMdata)[1],'~',paste(names(LMdata)[2:3], collapse="+"))) 
+		Formula4 <- formula(paste(names(LMdata)[1],'~',paste(names(LMdata)[-1], collapse="+")))  
 
+		summary(lm(Formula1,data=LMdata))  #adjR2==.5216
+		summary(lm(Formula2,data=LMdata))  #adjR2==.5245
+		summary(lm(Formula3,data=LMdata))  #adjR2==.5785
+		summary(lm(Formula4,data=LMdata))  #adjR2==.6482
 ```
 
 

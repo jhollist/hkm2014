@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
+
+<title>Main Question: Given that we have a unique combination of novel data, increased computational facilities, and an expanded geographic scope, what can we add to the classic understanding of the processes that are predictive of chlorophyll <em>a</em> and trophic state in lakes.</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+
+
+
+
+</head>
+
+<body>
+<h2>Main Question: Given that we have a unique combination of novel data, increased computational facilities, and an expanded geographic scope, what can we add to the classic understanding of the processes that are predictive of chlorophyll <em>a</em> and trophic state in lakes.</h2>
+
+<h3>Initital variable selection (Jeff)</h3>
+
+<p>1.mean temp
+2.DD45 
+3.Select scale(s) - local - 300m and regional - 3000m
+ <em>ANALYSIS</em>- as a check look at centroid distance matrix 
+4.Turbidity, not secchi - because turb is an instrument measure and not limited by depth of lake.  If need be Turb could be converted to and estimated secchi.</p>
+
+<h3>Analysis 1. Compare classic linear models to random forest models?</h3>
+
+<p>1.Chl a ~ TP (converted to TS)
+2.Chl a ~ TN (converted to TS)
+3.Chl a ~ TN + TP (converted to TS)
+4.Chl a ~ Linear Mod with varSelRF variables (converted to TS)</p>
+
+<pre><code>## 
+## Backwards elimination on random forest; ntree =  10000 ;  mtryFactor =  1 
+## 
+##  Selected variables:
+## [1] &quot;NTL&quot;      &quot;PTL&quot;      &quot;TOC&quot;      &quot;TURB&quot;     &quot;WSA_ECO9&quot;
+## 
+##  Number of selected variables: 5
+</code></pre>
+
+<pre><code>##  Number.Variables Vars.in.Forest          OOB            sd.OOB      
+##  Min.   : 2.0     Length:17          Min.   :0.325   Min.   :0.0148  
+##  1st Qu.: 6.0     Class :character   1st Qu.:0.327   1st Qu.:0.0148  
+##  Median :14.0     Mode  :character   Median :0.331   Median :0.0148  
+##  Mean   :25.1                        Mean   :0.337   Mean   :0.0149  
+##  3rd Qu.:36.0                        3rd Qu.:0.334   3rd Qu.:0.0149  
+##  Max.   :88.0                        Max.   :0.411   Max.   :0.0155
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk linearModels"/> </p>
+
+<pre><code>## 
+## Call:
+## lm(formula = Formula1, data = LMdata)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -4.545 -0.640  0.069  0.747  3.449 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -4.4982     0.1903   -23.6   &lt;2e-16 ***
+## lnNTL         1.0352     0.0293    35.3   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.05 on 1140 degrees of freedom
+##   (14 observations deleted due to missingness)
+## Multiple R-squared:  0.522,  Adjusted R-squared:  0.522 
+## F-statistic: 1.25e+03 on 1 and 1140 DF,  p-value: &lt;2e-16
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = Formula2, data = LMdata)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -6.384 -0.544  0.060  0.661  3.240 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -0.2124     0.0728   -2.92   0.0036 ** 
+## lnPTL         0.6971     0.0196   35.49   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.04 on 1140 degrees of freedom
+##   (14 observations deleted due to missingness)
+## Multiple R-squared:  0.525,  Adjusted R-squared:  0.525 
+## F-statistic: 1.26e+03 on 1 and 1140 DF,  p-value: &lt;2e-16
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = Formula3, data = LMdata)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -5.137 -0.530  0.079  0.639  3.425 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -2.8049     0.2246   -12.5   &lt;2e-16 ***
+## lnNTL         0.5660     0.0467    12.1   &lt;2e-16 ***
+## lnPTL         0.3901     0.0314    12.4   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.983 on 1139 degrees of freedom
+##   (14 observations deleted due to missingness)
+## Multiple R-squared:  0.579,  Adjusted R-squared:  0.579 
+## F-statistic:  784 on 2 and 1139 DF,  p-value: &lt;2e-16
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = Formula4, data = LMdata)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -5.579 -0.462  0.072  0.600  3.381 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -1.8717     0.2552   -7.33  4.2e-13 ***
+## lnNTL         0.4746     0.0562    8.44  &lt; 2e-16 ***
+## lnPTL         0.0898     0.0350    2.57     0.01 *  
+## lnTOC        -0.0151     0.0529   -0.29     0.78    
+## lnTURB        0.4939     0.0330   14.97  &lt; 2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.898 on 1137 degrees of freedom
+##   (14 observations deleted due to missingness)
+## Multiple R-squared:  0.649,  Adjusted R-squared:  0.648 
+## F-statistic:  527 on 4 and 1137 DF,  p-value: &lt;2e-16
+</code></pre>
+
+<p>5.Chl a TS ~ RF(varSelRF variables) - single randomForest run
+6.Chl a TS ~ Random Forest Consensus - single randomForest run</p>
+
+<p><em>ANALYSIS</em></p>
+
+<ul>
+<li>varSelRF (Bryan plus play with varSelRFBoot)</li>
+<li>run linear models (1-4) (Bryan)</li>
+<li>run RF (Betty)
+
+<ul>
+<li>randomForest All Variables</li>
+<li>randomForest varSelRF Variables</li>
+</ul></li>
+<li>output error matrices (Bryan, Betty and Jeff)
+
+<ul>
+<li>overall accuracy</li>
+<li>Kappa</li>
+</ul></li>
+</ul>
+
+<h3>Question 2. Are <em>in situ</em> nutrient and water quality data required to make predicitions of trophic state or can GIS derived information on lake and land use/land cover also provide quality predictions?</h3>
+
+<p><strong>Predict for these classes</strong>
+1. NLA Chl a trophic state classes
+2. High/Low trophic state classes</p>
+
+<h3>Question3. Can data-mining approaches identify new, interesting variables to use for the prediction of trophic state?</h3>
+
+<h2>Here&#39;s the analysis part:</h2>
+
+<h3>Initial Variable Culling:</h3>
+
+<p>This set of code creates namesets needed to cull out the initial set of variables</p>
+
+<h2>Chl <em>a</em> Trophic Status ~ All Variables + Landscape Percent</h2>
+
+<h2>Chl <em>a</em> Trophic Status ~ GIS Only Variables +Landscape Percent</h2>
+
+</body>
+
+</html>
+
