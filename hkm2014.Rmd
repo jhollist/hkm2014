@@ -36,6 +36,10 @@ Lastly, ... xxx found...
 
 Building on these past efforts, we take advanatage of one the first complete national scale efforts monitoring lakes to try and discern broad patterns in both in-lake parameters that drive trophic state and landscape level parameters that might also drive trophic state
 
+<!-- gear shift to testing against classic models and what data mining brings to the table -->
+
+Classic models for estimating chlorophyl *a*, and thus trophic state, are linear (or log-linear), and rely solely on nitrogen and phosphorus concentrations.  These well established models were initially developed in ...
+
 - Our primary question is, at the national scale, what are the primary determinants of lake trophic status? 
 - Can those determinants be used to predict trophic state with an acceptable level of accuracy?
 
