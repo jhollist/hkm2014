@@ -14,14 +14,37 @@ data(hkm2014Data)
 
 
 
-## Questions
+## Main Question: Given that we have a unique combination of novel data, increased computational facilities, and an expanded geographic scope, what can we add to the classic understanding of the processes that are predictive of chlorophyll *a* and trophic state in lakes. 
 
-### Question 1. Can modern data-mining approaches improve upon predictions of trophic state made with the most commonly used classic linear models?
+### Initital variable selection (Jeff)
+1.mean temp
+2.DD45 
+3.Select scale(s) - local - 300m and regional - 3000m
+ *ANALYSIS*- as a check look at centroid distance matrix 
+4.Turbidity, not secchi - because turb is an instrument measure and not limited by depth of lake.  If need be Turb could be converted to and estimated secchi.
 
-**Predict Trophic State with Classic Models**
+
+### Analysis 1. Compare classic linear models to random forest models?
+
+1.Chl a ~ TP (converted to TS)
+2.Chl a ~ TN (converted to TS)
+3.Chl a ~ TN + TP (converted to TS)
+4.Chl a ~ Linear Mod with varSelRF variables (converted to TS)
+5.Chl a TS ~ RF(varSelRF variables) - single randomForest run
+6.Chl a TS ~ Random Forest Consensus - single randomForest run
+
+*ANALYSIS*
+- varSelRF (Bryan plus play with varSelRFBoot)
+- run linear models (1-4) (Bryan)
+- run RF (Betty)
+ - randomForest All Variables
+ - randomForest varSelRF Variables
+- output error matrices (Bryan, Betty and Jeff)
+ - overall accuracy
+ - Kappa
 
 
-### Question 2. Are *in situ* nutrient and water quality data required to make predicitions of trophic state or can GIS derived information on lake and land use/land cover provide quality predictions?
+### Question 2. Are *in situ* nutrient and water quality data required to make predicitions of trophic state or can GIS derived information on lake and land use/land cover also provide quality predictions?
 
 **Predict for these classes**
 1. NLA Chl a trophic state classes
@@ -31,31 +54,41 @@ data(hkm2014Data)
 
 
 
+## Here's the analysis part:
 
+### Initial Variable Culling:
 
+This set of code creates namesets needed to cull out the initial set of variables
 
-```{r names, echo=FALSE, cache=TRUE}
+```{r variableSelection, echo=FALSE, cache=FALSE}
 nlawqNames<-names(hkm2014Data)[c(155:158,160:194)]
+nlawqNames<-nlawqNames[!nlawqNames%in%c("SECMEAN","TminW","TmaxW")]
 gisNames<-names(hkm2014Data[c(3,149:153,195:208)])
+gisNames<-gisNames[!gisNames%in%c("DD40","DD50")]
 lulcPercentNames<-names(hkm2014Data[c(grep("PercentImperv",names(hkm2014Data)),grep("Per_",names(hkm2014Data)))])
 if(length(grep("NA_",lulcPercentNames))>0){lulcPercentNames<-lulcPercentNames[-grep("NA_",lulcPercentNames)]}
+lulcPercentNames<-lulcPercentNames[-grep("_1500m",lulcPercentNames)]
 respName<-"TS_CHLA"
+allVarDF<-na.omit(hkm2014Data[,c(nlawqNames,gisNames,lulcPercentNames,respName)])
 ```
+
 
 ## Chl *a* Trophic Status ~ All Variables + Landscape Percent
 
-```{r allLandscapePercent, echo=FALSE, cache=TRUE}
-allVarDF<-na.omit(hkm2014Data[,c(nlawqNames,gisNames,lulcPercentNames,respName)])
+```{r allLandscapePercent, echo=FALSE, cache=FALSE, eval=FALSE}
+
 allPerc_varsel<-varSelRF(allVarDF[,1:dim(allVarDF)[2]-1],allVarDF[,respName],ntree = 10000, 
 												 ntreeIterat = 5000, vars.drop.frac = 0.2)
 summary(allPerc_varsel$selec.history)
 plot(allPerc_varsel, which=2)
+
 ```
+
 
 
 ## Chl *a* Trophic Status ~ GIS Only Variables +Landscape Percent
 
-```{r gisLandscapePercent, echo=FALSE, cache=TRUE}
+```{r gisLandscapePercent, echo=FALSE, cache=FALSE, eval=FALSE}
 gisVarDF<-na.omit(hkm2014Data[,c(gisNames,lulcPercentNames,respName)])
 gisPerc_varsel<-varSelRF(gisVarDF[,1:dim(gisVarDF)[2]-1],gisVarDF[,respName],ntree = 10000, 
 												 ntreeIterat = 5000,vars.drop.frac = 0.2)
