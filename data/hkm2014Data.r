@@ -57,7 +57,7 @@ v<-'HMK2014data.r'
 									'TS_CHLA','Microcystin_ugl','WHO_Category')
 			keep<-VarNames1[-c(2,67,68)]
 	#merge bioV and the NLCD data
-		hkm2014Data<-merge(a,bioV[,keep],all.x=T)
+		hkm2014Data<-merge(a,bioV[,keep],all.y=T)
 
 ##################save the data
 save(hkm2014Data,file='./data/hkm2014Data.rda')  
