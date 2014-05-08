@@ -9,10 +9,8 @@ output: pdf_document
 devtools::install_github("hkm","jhollist")
 library(hkm)
 library(varSelRF)
-data(hkm2014Data)
+data(hkm2014Data)  
 ```
-
-
 
 ## Main Question: Given that we have a unique combination of novel data, increased computational facilities, and an expanded geographic scope, what can we add to the classic understanding of the processes that are predictive of chlorophyll *a* and trophic state in lakes. 
 
@@ -34,11 +32,36 @@ data(hkm2014Data)
 						grep("Km2",names(hkm2014Data)),					 #Buffer Variables tabulated as area
 						grep("DDs",names(hkm2014Data))[-2],      #Degree Days variables-keep DDs45
 						grep("Tm",names(hkm2014Data))[-3],       #Water Temp variables-keep TmeanW
-						grep("SECMEAN",names(hkm2014Data))[-3],  #SECMEAN dropped-using TURB instead
-						grep("CHLA",names(hkm2014Data))[-3],     #CHLA dropped; it is the response variable
+						grep("SECMEAN",names(hkm2014Data)),  		 #SECMEAN dropped-using TURB instead
+						grep("CHLA",names(hkm2014Data)),         #CHLA dropped; it is the response variable
+						grep("bvCat",names(hkm2014Data)),        #bvCat: biovolume category
 						grep("TS_",names(hkm2014Data))))         #Trophic State Classification Variables
-	Pvar<-hkm2014Data[,-omit]  #df with the predictor variables.
+
+#create df with the predictor variables including  WSA_ECO9 as a categorical variable.	
+	Pall<-hkm2014Data[,-omit]  
+
+#create df with the predictor variables including  WSA_ECO9 9 dummy variables.	
+	#df without WSA_ECO9
+		Pall1<-Pall[,-grep("WSA_ECO9",names(Pall))]
+	#create dummy variables for WSA_ECO9 as factors
+		a<-as.character(unique(hkm2014Data$WSA_ECO9)) #vector of WSA_ECO9 names
+  		for(i in a){
+    		b<-paste('WSA9_',i,sep='')   #create variable name
+    		Pall1[,b]<-factor(0, levels = 0:1, labels = c("no", "yes"))  #create the factor
+    		Pall1[Pall$WSA_ECO9==i,b]<-'yes'  # populate the factor
+    }		
+
+#create df of GIS predictor variables
+		#variables to keep from Pall
+			keep<-c(grep("_300",names(Pall),value=TRUE),"AlbersX","AlbersY","LakeArea","LakePerim","ShoreDevel",
+							"BASINAREA","DEPTHMAX","ELEV_PT","DDs45","MaxLength","MaxWidth","MeanWidth",          
+              "FetchN","FetchNE","FetchE","FetchSE","MaxDepthCorrect","VolumeCorrect","MeanDepthCorrect",
+							grep("WSA",names(Pall),value=TRUE))
+		#create df
+			Pgis<-Pall[,keep]
 ```
+
+
 
 ### Analysis 1. Compare classic linear models to random forest models?
 
@@ -47,32 +70,72 @@ data(hkm2014Data)
 3.Chl a ~ TN + TP (converted to TS)
 4.Chl a ~ Linear Mod with varSelRF variables (converted to TS)
 
-```{r linearModels, echo=FALSE, cache=FALSE} 
+use varSelRF to select the variables for linear model 4
+
+```{r run_varSelRF, echo=FALSE, cache=TRUE} 
+#run for all predictors
 	#select complete cases
-		keep<-complete.cases(Pvar,hkm2014Data$TS_CHLA)
+		keep<-complete.cases(Pall,hkm2014Data$TS_CHLA)
 	#run rf
-		varSelAll<-varSelRF(Pvar[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = 10000, 
+		varSelAll<-varSelRF(Pall[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = 10000, 
 												 ntreeIterat = 5000, vars.drop.frac = 0.2)
 	#view results
-		varSelAll  #Selected variables: "NTL"      "PTL"      "TOC"      "TURB"     "WSA_ECO9"
+		varSelAll  #Selected variables: c('NTL','PTL','TOC','TURB','K',WSA_ECO9)
 		summary(varSelAll$selec.history)
 		plot(varSelAll, which=2)
 
+#run for GIS predictors
+	#select complete cases
+		keep<-complete.cases(Pgis,hkm2014Data$TS_CHLA)
+	#run rf
+		varSelGIS<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = 10000, 
+												 ntreeIterat = 5000, vars.drop.frac = 0.2)
+	#view results
+		varSelGIS  #Selected variables: c("AlbersX","AlbersY","CropsPer_3000m","DEPTHMAX",
+                                      "EvergreenPer_3000m","EvergreenPer_300m","WSA_ECO9")
+		summary(varSelGIS$selec.history)
+		plot(varSelGIS, which=2)
+```
+
+
+```{r linearModels, echo=FALSE, cache=FALSE} 
 	#select data for linear models
-		Vars<-c('CHLA','NTL','PTL','TOC','TURB') #select vars for linear model
-		LMdata<-log(hkm2014Data[,Vars]) #log transform data
-			names(LMdata)<-paste('ln',Vars,sep='')
+		#select vars for linear model
+			Vars<-c('CHLA','NTL','PTL','TOC','TURB','K') 
+		#Log transform the data
+			LMall<-log(hkm2014Data[,Vars]) #log transform data
+				names(LMall)<-paste('ln',Vars,sep='')
+		#add WSA9 dummies
+			LMall[,7:15]<-Pall1[,grep("WSA",names(Pall1),value=TRUE)]
 
-	#run linear models  
-		Formula1 <- formula(paste(names(LMdata)[1],'~',paste(names(LMdata)[2], collapse="+"))) 
-		Formula2 <- formula(paste(names(LMdata)[1],'~',paste(names(LMdata)[3], collapse="+"))) 
-		Formula3 <- formula(paste(names(LMdata)[1],'~',paste(names(LMdata)[2:3], collapse="+"))) 
-		Formula4 <- formula(paste(names(LMdata)[1],'~',paste(names(LMdata)[-1], collapse="+")))  
-
-		summary(lm(Formula1,data=LMdata))  #adjR2==.5216
-		summary(lm(Formula2,data=LMdata))  #adjR2==.5245
-		summary(lm(Formula3,data=LMdata))  #adjR2==.5785
-		summary(lm(Formula4,data=LMdata))  #adjR2==.6482
+		
+	#run linear models 
+		#1. lnCHLA ~ lnNTL
+				Formula<-formula(paste(names(LMall)[1],'~',paste(names(LMall)[2], collapse="+"))) 
+					LM<-lm(Formula,data=LMall)
+						summary(LM) 						#adjR2== 0.5231
+						mean(residuals(LM)^2)		#rmse == 1.0899
+		#2. lnCHLA ~ lnPTL
+				Formula<- formula(paste(names(LMall)[1],'~',paste(names(LMall)[3], collapse="+"))) 
+					LM<-lm(Formula,data=LMall)
+						summary(LM) 						#adjR2== 0.5251
+						mean(residuals(LM)^2)		#rmse == 1.0854
+		#3. lnCHLA ~ lnNTL + lnPTL
+				Formula<- formula(paste(names(LMall)[1],'~',paste(names(LMall)[2:3], collapse="+"))) 
+					LM<-lm(Formula,data=LMall)
+						summary(LM) 						#adjR2== 0.5795
+						mean(residuals(LM)^2)		#rmse == 0.9600
+    #4. lnCHLA ~ lnNTL + lnPTL + lnTOC + lnTURB + lnK
+				Formula<- formula(paste(names(LMall)[1],'~',paste(names(LMall)[2:6], collapse="+"))) 
+					LM<-lm(Formula,data=LMall)
+						summary(LM) 						#adjR2== 0.6531
+						mean(residuals(LM)^2)		#rmse == 0.7900
+		#5. lnCHLA ~ lnNTL + lnPTL + lnTOC + lnTURB + lnK + WSA9_WMT + WSA9_CPL + 
+    						#WSA9_NAP + WSA9_UMW + WSA9_TPL + WSA9_SPL + WSA9_XER + WSA9_NPL + WSA9_SAP
+				Formula<- formula(paste(names(LMall)[1],'~',paste(names(LMall)[-1], collapse="+"))) 
+					LM<-lm(Formula,data=LMall)
+						summary(LM) 						#adjR2== 0.7156
+						mean(residuals(LM)^2)		#rmse == 0.6430
 ```
 
 
@@ -88,6 +151,49 @@ data(hkm2014Data)
 - output error matrices (Bryan, Betty and Jeff)
  - overall accuracy
  - Kappa
+ 
+ 
+```{r mob, echo=FALSE, cache=FALSE} 
+#####MOB
+require(party)
+	#define data and transform the response variables; covariates do not need transformation.
+				mobData<-data.frame(lnCHLA=log(hkm2014Data$CHLA),
+												lnNTL=log(hkm2014Data$NTL),
+												lnPTL=log(hkm2014Data$PTL),
+												Pall1[,-c(grep("DATE_COL",names(Pall1)),
+												 grep("NTL",names(Pall1)),
+												 grep("PTL",names(Pall1)))])
+
+#The model is estimated by OLS, the instability is assessed using a Bonferroni-corrected significance
+#level of ? = 0.05 and the nodes are split with a required minimal segment size of 40
+#observations. The control parameters are thus set to
+  ctrl <- mob_control(alpha = 0.05, bonferroni = TRUE, minsplit = 20,
+    objfun = deviance, verbose = TRUE)
+    
+#select the covariates
+  Cov<-names(mobData)[-c(1:3)]
+  Formula <- formula(paste('lnCHLA~lnNTL+lnPTL |',paste(Cov, collapse="+")))  #cool way to specify the model
+  #Formula <- formula(paste('lnCHLA~lnNTL |',paste(Cov, collapse="+")))  #cool way to specify the model
+  
+#run the model
+  test <- mob(Formula,data=mobData,control=ctrl,model=linearModel)
+
+#print results
+#test
+
+#plot results
+#windows(12,9)
+plot(test)
+
+#The test statistics and p?values computed in each node, can be extracted analogously by using
+#the method for the function sctest() (for performing structural change tests).
+  sctest(test, node = 6)
+
+#For summarizing the quality of the fit, we could compute the mean squared error, loglikelihood or AIC:
+  mean(residuals(test)^2)  #rmse = 0.5790
+  logLik(test)						 #log Lik.= -1186.26 (df=44)
+  AIC(test)                #AIC = 2460.519
+```
 
 
 ### Question 2. Are *in situ* nutrient and water quality data required to make predicitions of trophic state or can GIS derived information on lake and land use/land cover also provide quality predictions?
