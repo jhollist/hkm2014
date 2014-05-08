@@ -23,6 +23,10 @@ data(hkm2014Data)
 
 
 ```{r predictorSelection, echo=FALSE, cache=FALSE} 
+
+	#add a variable for NP ratio
+		hkm2014Data$NPratio<-hkm2014Data$NTL/hkm2014Data$PTL
+
 	#select the predictor variable
 		omit<-unique(c(grep("NLA_ID",names(hkm2014Data)),  #NLA_ID
 						grep("Comid",names(hkm2014Data)),				 #Comid
@@ -57,8 +61,13 @@ data(hkm2014Data)
 							"BASINAREA","DEPTHMAX","ELEV_PT","DDs45","MaxLength","MaxWidth","MeanWidth",          
               "FetchN","FetchNE","FetchE","FetchSE","MaxDepthCorrect","VolumeCorrect","MeanDepthCorrect",
 							grep("WSA",names(Pall),value=TRUE))
-		#create df
+		#create df of all GIS variables
 			Pgis<-Pall[,keep]
+		#create df of GIS variables with 300m NLCD only
+			Pgis300<-Pgis[,-grep("3000m",names(Pgis))]
+		#create df of GIS variables with 3000m NLCD only
+			Pgis3k<-Pgis[,-grep("300m",names(Pgis))]
+
 ```
 
 
@@ -80,11 +89,11 @@ use varSelRF to select the variables for linear model 4
 		varSelAll<-varSelRF(Pall[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = 10000, 
 												 ntreeIterat = 5000, vars.drop.frac = 0.2)
 	#view results
-		varSelAll  #Selected variables: c('NTL','PTL','TOC','TURB','K',WSA_ECO9)
+		varSelAll  #Selected variables: c('NPratio,'NTL','PTL','TOC','TURB','K',WSA_ECO9)
 		summary(varSelAll$selec.history)
 		plot(varSelAll, which=2)
 
-#run for GIS predictors
+#run for all GIS predictors
 	#select complete cases
 		keep<-complete.cases(Pgis,hkm2014Data$TS_CHLA)
 	#run rf
@@ -92,18 +101,41 @@ use varSelRF to select the variables for linear model 4
 												 ntreeIterat = 5000, vars.drop.frac = 0.2)
 	#view results
 		varSelGIS  #Selected variables: c("AlbersX","AlbersY","CropsPer_3000m","DEPTHMAX",
-                                      "EvergreenPer_3000m","EvergreenPer_300m","WSA_ECO9")
+                                    #  "EvergreenPer_3000m","EvergreenPer_300m","WSA_ECO9")
 		summary(varSelGIS$selec.history)
 		plot(varSelGIS, which=2)
+
+#run for GIS predictors with the 300m NLCD but without the 3000m NLCD
+	#select complete cases
+		keep<-complete.cases(Pgis300,hkm2014Data$TS_CHLA)
+	#run rf
+		varSelGIS300<-varSelRF(Pgis300[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = 10000, 
+												 ntreeIterat = 5000, vars.drop.frac = 0.2)
+	#view results
+		varSelGIS300  #Selected variables: c("AlbersX","AlbersY","BASINAREA","CropsPer_300m","DDs45","DeciduousPer_300m","DEPTHMAX","ELEV_PT","EvergreenPer_300m","HerbWetPer_300m", "LakeArea","LakePerim","MaxDepthCorrect","MaxLength","MeanDepthCorrect","PasturePer_300m","VolumeCorrect","WoodyWetPer_300m","WSA_ECO9"    
+		summary(varSelGIS300$selec.history)
+		plot(varSelGIS300, which=2)
+
+#run for GIS predictors with the 3000m NLCD but without the 300m NLCD
+	#select complete cases
+		keep<-complete.cases(Pgis3k,hkm2014Data$TS_CHLA)
+	#run rf
+		varSelGIS3k<-varSelRF(Pgis3k[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = 10000, 
+												 ntreeIterat = 5000, vars.drop.frac = 0.2)
+	#view results
+		varSelGIS3k  #Selected variables: c("AlbersX","AlbersY","BASINAREA","CropsPer_3000m","DDs45","DeciduousPer_3000m","DEPTHMAX","DevOpenPer_3000m","ELEV_PT","EvergreenPer_3000m","HerbWetPer_3000m","MaxDepthCorrect","MeanDepthCorrect","ShrubPer_3000m","WSA_ECO9" )
+		summary(varSelGIS3k$selec.history)
+		plot(varSelGIS3k, which=2)
 ```
 
 
 ```{r linearModels, echo=FALSE, cache=FALSE} 
 	#select data for linear models
-		#select vars for linear model
-			Vars<-c('CHLA','NTL','PTL','TOC','TURB','K') 
+		#select vars for linear model 
+			LMall<-hkm2014Data[,c('CHLA','NTL','PTL','TOC','TURB','K')]
+			LMall$NPratio<-Pall$NPratio
 		#Log transform the data
-			LMall<-log(hkm2014Data[,Vars]) #log transform data
+			LMall<-log(LMall) #log transform data
 				names(LMall)<-paste('ln',Vars,sep='')
 		#add WSA9 dummies
 			LMall[,7:15]<-Pall1[,grep("WSA",names(Pall1),value=TRUE)]
@@ -125,11 +157,11 @@ use varSelRF to select the variables for linear model 4
 					LM<-lm(Formula,data=LMall)
 						summary(LM) 						#adjR2== 0.5795
 						mean(residuals(LM)^2)		#rmse == 0.9600
-    #4. lnCHLA ~ lnNTL + lnPTL + lnTOC + lnTURB + lnK
-				Formula<- formula(paste(names(LMall)[1],'~',paste(names(LMall)[2:6], collapse="+"))) 
+    #4. lnCHLA ~ lnNTL + lnPTL + lnTOC + lnTURB + lnK +lnNPratio
+				Formula<- formula(paste(names(LMall)[1],'~',paste(names(LMall)[2:7], collapse="+"))) 
 					LM<-lm(Formula,data=LMall)
-						summary(LM) 						#adjR2== 0.6531
-						mean(residuals(LM)^2)		#rmse == 0.7900
+						summary(LM) 						#adjR2== 0.6603
+						mean(residuals(LM)^2)		#rmse == 0.7729
 		#5. lnCHLA ~ lnNTL + lnPTL + lnTOC + lnTURB + lnK + WSA9_WMT + WSA9_CPL + 
     						#WSA9_NAP + WSA9_UMW + WSA9_TPL + WSA9_SPL + WSA9_XER + WSA9_NPL + WSA9_SAP
 				Formula<- formula(paste(names(LMall)[1],'~',paste(names(LMall)[-1], collapse="+"))) 
