@@ -140,6 +140,19 @@ use varSelRF to select the variables for linear model 4
 
 
 5.Chl a TS ~ RF(varSelRF variables) - single randomForest run
+
+```{r exploreRF, echo=FALSE, cache=FALSE}
+## Exploring different RF outputs
+#run for all predictors
+	#select complete cases
+		keep<-complete.cases(Pall,hkm2014Data$TS_CHLA)
+
+		fullRF<-randomForest(hkm2014Data[keep,'TS_CHLA']~., data=Pall[keep,],ntree = 10000,
+												 importance=TRUE,proximity=TRUE)
+
+
+```
+
 6.Chl a TS ~ Random Forest Consensus - single randomForest run
 
 *ANALYSIS*
