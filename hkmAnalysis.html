@@ -159,112 +159,298 @@ hr {
 3.Chl a ~ TN + TP (converted to TS)
 4.Chl a ~ Linear Mod with varSelRF variables (converted to TS)</p>
 
+<p>use varSelRF to select the variables for linear model 4</p>
+
+<pre><code>## [1] &quot;RF of all variables with both 300m and 3000m  percent nlcd&quot;
+</code></pre>
+
 <pre><code>## 
 ## Backwards elimination on random forest; ntree =  10000 ;  mtryFactor =  1 
 ## 
 ##  Selected variables:
-## [1] &quot;NTL&quot;      &quot;PTL&quot;      &quot;TOC&quot;      &quot;TURB&quot;     &quot;WSA_ECO9&quot;
+## [1] &quot;K&quot;        &quot;NPratio&quot;  &quot;NTL&quot;      &quot;PTL&quot;      &quot;TOC&quot;      &quot;TURB&quot;    
+## [7] &quot;WSA_ECO9&quot;
 ## 
-##  Number of selected variables: 5
+##  Number of selected variables: 7
 </code></pre>
 
 <pre><code>##  Number.Variables Vars.in.Forest          OOB            sd.OOB      
-##  Min.   : 2.0     Length:17          Min.   :0.325   Min.   :0.0148  
-##  1st Qu.: 6.0     Class :character   1st Qu.:0.327   1st Qu.:0.0148  
-##  Median :14.0     Mode  :character   Median :0.331   Median :0.0148  
-##  Mean   :25.1                        Mean   :0.337   Mean   :0.0149  
-##  3rd Qu.:36.0                        3rd Qu.:0.334   3rd Qu.:0.0149  
-##  Max.   :88.0                        Max.   :0.411   Max.   :0.0155
+##  Min.   : 2.0     Length:17          Min.   :0.323   Min.   :0.0142  
+##  1st Qu.: 6.0     Class :character   1st Qu.:0.332   1st Qu.:0.0143  
+##  Median :14.0     Mode  :character   Median :0.338   Median :0.0144  
+##  Mean   :25.1                        Mean   :0.341   Mean   :0.0144  
+##  3rd Qu.:36.0                        3rd Qu.:0.341   3rd Qu.:0.0144  
+##  Max.   :88.0                        Max.   :0.402   Max.   :0.0149
 </code></pre>
 
-<p><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAfgAAAH4CAMAAACR9g9NAAAACVBMVEX9/v0AAAD9/v3/vTJ9AAAAA3RSTlP//wDXyg1BAAAACXBIWXMAAAsSAAALEgHS3X78AAAKp0lEQVR4nO3di3KqSBgA4R3f/6G36kQFFHBg/rlAd1ftmhNl1HzcVEj+exiy/3o/AOuT8NCEhyY8NOGhCQ9NeGjCQxMemvDQhIcmPDThoQkPTXhowkMTHprw0ISHJjw04aEJD014aMJDEx6a8NCEhyY8NOGhCQ9NeGjCQxMemvDQhIcmPDThoQkPTXhowkMTHprw0ISHJjw04aEJD014aMJDEx6a8NCEhyY8NOGhCQ9NeGjCQxMemvDQSuCTjVxF+IJprXbCQxMemvDQhIcmPDThoQkPTXhoRfDT+z9rbwUJP3Il8Gmafm0Y4UcuBn51FOFHLgh+vqbP/BjAuha3xLuNv1RB2/i1kYQfOeGhuaqHFvA6Pr2/OjS0dc137qAJD014aMJDEx6a8NCEhyY8NOGhCQ9NeGjCQxMemvDQhIcmPDThoQkPTXhowkMTHprw0ISHJjw04aEJD014aMJDEx6a8NCEhyY8NOGhCQ9NeGjCQ2sJ75wwUE2XeOXHqe2q3t9vO0ytt/HKD5I7d9CEh9YB3hlihHos8coPUJdVvTv3/eu0jVe+d+7cQRMeWj9454uudVzile9Zz1W9O/cd67uNV75b7txBawbvnxwdq1bw6fMbuY/A6tQfXvkuDQCvfI+G2MYr3z736qEJD60Ifr76zjuY2tX9KJXAz3fYcv+atPKD1Bpe+UEKgk+zgdKrjak8Fm+EKsD/HFrgAYqBT8fOlFO+f0Hwa2v2naGdJ7oXtXN38NxY5XsX8Dr+vbY/MrS7eJ0b8GBLP7hvkQdbQut6sGXJxFZW1w9pduWlr1rno2yl71Xvj2XF7VRveE+06lR3+J/y0lepP/zvl33SV2gA+CxZ8YNrCl/yNq3LfWxtl/iiN+ilj6zxqt6PZkap9Ta+VN7FPqgRdu6eN5e+ZePAH5pA/dJ6wIds6D3fvqwuS3zcLp76Z+uzqg/kcsk/V6dt/N5McUby5vo756ecHnL/6vZnyy4O3T0y3T3tl0/rNQMEPNfbwD+n3pi0wiLTop1jkZ8zwLHL+QD799z+YMsy+O8l/3ORKRi6XQ3m0/EOtgx5yq8hVs7viVpX7t//6UWx1azZ92DLeofc/Vxkjs4Ap9ep2Q+3xQw5u8f9q2tv43dv0+SnsA/WHqRVw+3cLYdo/fMuXXKv09jwd1zUBqk//M+df+1r1B++dCfQTjUAfI6r9NGNAJ91U+ljGwM+f0z9g7oWfOn7ufZuGPisWwsf1jDw2W/0/buda/zSxoHPO5PqfSO39mUNBH98HUGxr/FEh4I/cR/peXHnWaDKns3F4ad7+nFvV541Np5e2VMaDf70RD8+fT879AjNdmlnvxd86yltzA9fB3zs32eHY+5OTHZX+LS3JVvMDivf3rj1/Bs79VjVn6CffkI7jyXNb9mszAVw7QYH5uXp+IHv1cP6+mFA+KI+F5KVhWb6aXxekz16/jW5C+BylKzHtHHMUOYdjgpfONdkrPw/l5C1K7NHXVnOPpa0X9/Oe9QZXXUb/566eL7JG2BtI7Cceg1m0zfzgax/u+WeyLDwZfQn4B/TdnW5POaMunPNgW288OWD5G+5V265vfwe3sYfq+Gu5+jwfT6OufLbPZkND9+J/vZdAN5qdBV4F/vgrgKP2O627DrwFtrV4F3sg7oavPRBXQ/+b2z1C7sovPt6pV0W/nkf6p/s4vAu+Wcrgt8/yr0lyM31K/yCjhL42cfTayO1tbjpkr98WtNvaikfeP/q/L8f3xv+eZ8bd3rR32mz/ZhfM8Cxy/kA+/d8Bn5xaErzvg4x+lhk2j6akzX48UXBd97Gb933ykEWTX592flFsdWsebNV/XTnvxaZ3BmgeJ2a/XBbzJCze9y/+rLw2f2C7Pvo6nWbvXo7VsDr+PT+6tDQ1rXLv3Nn58qDP2Uo/MgJDy0T/sw7MsKPnNt4aMJDy4Q/846U8CN3ZOfObfyNEh6a8NDcxkNzrx6a79xBEx6ab9lCcxsPzVU9NOGhuY2H5jYemvDQ8t+yPQwp/Mhl79wlP6S5VcJDEx6aH8tCc68emvDQhIcmPDThoWXBn/tlRsKPXA58mv0XN7R1TXhowkMTHloW/LlfVSn8yPlyDprw0A4cbBk8tHUt7w2cnJseHdq6lrtXn3Hbg0Nb14SHJjw0t/HQ3KuH5ut4aMJDc1UPzZ07aL6cgyY8NOGhuY2H5l49NF/HQxMemvDQhIcmPLQi+GlX3z8qfLVK4Keza1bPsxF+5GLgV0cSfuQqwJ8848qaFgbvNv5aCQ8tCn5lHOFHLgh+bRjhRy7gdXza+PRO+JHznTtowkMTHprw0ISHJjw04aEJD014aMJDEx6a8NCEhyY8NOGhCQ9NeGjCQxMemvDQhIcmPDThoQkPTXhowkMTHprw0ISHJjw04aEJD014aMJDEx6a8NCEhyY8NOGhCQ9NeGjCQxMemvDQhIcmPDThoQkPTXhowkMTHprw0ISHJjw04aEJD014aMJDEx5awN+W3RpH+JErgU/T9N9/Ulj4sYuBTy7xVytoiZ+Pk16VPTKrWgX4zKGta8JDEx6a8NACXsenjXGEHznfuYMmPDThoQkPTXhowkMTHprw0ISHJjw04aEJD014aMJDEx6a8NCEhyY8NOGhCQ9NeGjCQxMemvDQhIcmPDThoQkPTXhowkMTHprw0ISHJjw04aEJD014aMJDEx6a8NCEhyY8NOGhCQ9NeGjCQxMemvDQhIcmPDThoQkPTXhowkMTHprw0ISHJjw04aEJDy3gjwovv8oe2rpWAp/e009f5Q9tXRMeWgX49Kr4wVm9XOKhCQ9NeGjCQwt4HZ/eXx0a2rrmO3fQhIcmPDThoQkPTXhowkMTHlpNeBu5evCf80HcULUGD3qId3imwvcbpubgwlcY5RbPVPh+w9QcXPgKo9zimQrfb5iagwtfYZRbPNNAeLtSwkMTHprw0ISHJjw04aEJD014aMJDC4P/echH4eDFo6fXSKWPJGKYzcG3TlfLHuI10OxitSj41bMqwwoY+fmjKBzsOX2lZ7tzgmruCPNnuTtQ5Kq+GnyE+yME/jlGHfg0XZwcfPksbwAfsWa9AHyaTk4+Pcbrfw3h667pY7bxASMV2/waWfjY0ceHf45+Nfi67sPAh20xNoe/GHxN94FW9eU73vtjXw4+49yNstHLx4gYKQW81N4dfXZxbojcgXznDprw0ISHJjw04aEJD014aMJDEx6a8NCEhyY8NOGhCQ9NeGjCQxMemvDQhIcmPLRbwKfZ/1ev2ppu7dr0+dWhIx8rH2Qe1z3g3wcVf1+1N9mvYfNudmjMYboH/MeR5OnfrPA8EW1+pHGaH368OFNtuj7Nb/2+xcfxyuvfT0n4pn3Bv/6bLqYrHosTDh5pMf3XrZffeHycUfF1UfOXBMR2E/h1oDWax+PjX2n23dm5J0vPxeSfI4ScAtO6u8D/+W3D/50Bsw0/Xf/1r2nyrVV9Wk59iSjw0w0fa/Cb64c0n3wa4nvV8BC+fX8b63X4tXX1+r++NtYntvHCN22GsVxj/1uen7PFnGXxr9dss1jVz6adreOnsxCX6/7pQngbO+GhCQ9NeGjCQxMemvDQhIcmPDThoQkPTXhowkMTHprw0ISHJjw04aH9DzgXs5rglV/jAAAAAElFTkSuQmCC" alt="plot of chunk linearModels"/> </p>
-
-<pre><code>## 
-## Call:
-## lm(formula = Formula1, data = LMdata)
-## 
-## Residuals:
-##    Min     1Q Median     3Q    Max 
-## -4.545 -0.640  0.069  0.747  3.449 
-## 
-## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  -4.4982     0.1903   -23.6   &lt;2e-16 ***
-## lnNTL         1.0352     0.0293    35.3   &lt;2e-16 ***
-## ---
-## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
-## 
-## Residual standard error: 1.05 on 1140 degrees of freedom
-##   (14 observations deleted due to missingness)
-## Multiple R-squared:  0.522,  Adjusted R-squared:  0.522 
-## F-statistic: 1.25e+03 on 1 and 1140 DF,  p-value: &lt;2e-16
+<pre><code>## [1] &quot;RF of all variables with only the 300m percent nlcd&quot;
 </code></pre>
 
 <pre><code>## 
+## Backwards elimination on random forest; ntree =  10000 ;  mtryFactor =  1 
+## 
+##  Selected variables:
+## [1] &quot;K&quot;        &quot;NPratio&quot;  &quot;NTL&quot;      &quot;ORGION&quot;   &quot;PTL&quot;      &quot;TOC&quot;     
+## [7] &quot;TURB&quot;     &quot;WSA_ECO9&quot;
+## 
+##  Number of selected variables: 8
+</code></pre>
+
+<pre><code>##  Number.Variables Vars.in.Forest          OOB            sd.OOB      
+##  Min.   : 2.00    Length:16          Min.   :0.323   Min.   :0.0142  
+##  1st Qu.: 5.75    Class :character   1st Qu.:0.331   1st Qu.:0.0143  
+##  Median :13.50    Mode  :character   Median :0.332   Median :0.0143  
+##  Mean   :21.81                       Mean   :0.339   Mean   :0.0144  
+##  3rd Qu.:31.75                       3rd Qu.:0.343   3rd Qu.:0.0144  
+##  Max.   :71.00                       Max.   :0.399   Max.   :0.0149
+</code></pre>
+
+<pre><code>## [1] &quot;RF of all variables with only the 3000m percent nlcd&quot;
+</code></pre>
+
+<pre><code>## 
+## Backwards elimination on random forest; ntree =  10000 ;  mtryFactor =  1 
+## 
+##  Selected variables:
+## [1] &quot;K&quot;        &quot;NPratio&quot;  &quot;NTL&quot;      &quot;ORGION&quot;   &quot;PTL&quot;      &quot;TOC&quot;     
+## [7] &quot;TURB&quot;     &quot;WSA_ECO9&quot;
+## 
+##  Number of selected variables: 8
+</code></pre>
+
+<pre><code>##  Number.Variables Vars.in.Forest          OOB            sd.OOB      
+##  Min.   : 2.00    Length:16          Min.   :0.326   Min.   :0.0143  
+##  1st Qu.: 5.75    Class :character   1st Qu.:0.329   1st Qu.:0.0143  
+##  Median :13.50    Mode  :character   Median :0.335   Median :0.0144  
+##  Mean   :21.81                       Mean   :0.340   Mean   :0.0144  
+##  3rd Qu.:31.75                       3rd Qu.:0.343   3rd Qu.:0.0144  
+##  Max.   :71.00                       Max.   :0.396   Max.   :0.0149
+</code></pre>
+
+<pre><code>## [1] &quot;RF of GIS variables with both 300m and 3000m  percent nlcd&quot;
+</code></pre>
+
+<pre><code>## 
+## Backwards elimination on random forest; ntree =  10000 ;  mtryFactor =  1 
+## 
+##  Selected variables:
+## [1] &quot;AlbersX&quot;            &quot;AlbersY&quot;            &quot;CropsPer_3000m&quot;    
+## [4] &quot;DEPTHMAX&quot;           &quot;EvergreenPer_3000m&quot; &quot;EvergreenPer_300m&quot; 
+## [7] &quot;WSA_ECO9&quot;          
+## 
+##  Number of selected variables: 7
+</code></pre>
+
+<pre><code>##  Number.Variables Vars.in.Forest          OOB            sd.OOB      
+##  Min.   : 2.0     Length:15          Min.   :0.485   Min.   :0.0148  
+##  1st Qu.: 5.5     Class :character   1st Qu.:0.491   1st Qu.:0.0148  
+##  Median :11.0     Mode  :character   Median :0.493   Median :0.0148  
+##  Mean   :17.3                        Mean   :0.503   Mean   :0.0148  
+##  3rd Qu.:24.5                        3rd Qu.:0.516   3rd Qu.:0.0148  
+##  Max.   :54.0                        Max.   :0.536   Max.   :0.0148
+</code></pre>
+
+<pre><code>## [1] &quot;RF of GIS variables with only 300m percent nlcd&quot;
+</code></pre>
+
+<pre><code>## 
+## Backwards elimination on random forest; ntree =  10000 ;  mtryFactor =  1 
+## 
+##  Selected variables:
+## [1] &quot;AlbersX&quot;           &quot;AlbersY&quot;           &quot;CropsPer_300m&quot;    
+## [4] &quot;DEPTHMAX&quot;          &quot;EvergreenPer_300m&quot; &quot;WSA_ECO9&quot;         
+## 
+##  Number of selected variables: 6
+</code></pre>
+
+<pre><code>##  Number.Variables Vars.in.Forest          OOB            sd.OOB      
+##  Min.   : 2.0     Length:13          Min.   :0.483   Min.   :0.0148  
+##  1st Qu.: 5.0     Class :character   1st Qu.:0.492   1st Qu.:0.0148  
+##  Median :10.0     Mode  :character   Median :0.507   Median :0.0148  
+##  Mean   :13.5                        Mean   :0.507   Mean   :0.0148  
+##  3rd Qu.:19.0                        3rd Qu.:0.521   3rd Qu.:0.0148  
+##  Max.   :37.0                        Max.   :0.537   Max.   :0.0148
+</code></pre>
+
+<pre><code>## [1] &quot;RF of GIS variables with only 3000m percent nlcd&quot;
+</code></pre>
+
+<pre><code>## 
+## Backwards elimination on random forest; ntree =  10000 ;  mtryFactor =  1 
+## 
+##  Selected variables:
+##  [1] &quot;AlbersX&quot;            &quot;AlbersY&quot;            &quot;BASINAREA&quot;         
+##  [4] &quot;CropsPer_3000m&quot;     &quot;DDs45&quot;              &quot;DeciduousPer_3000m&quot;
+##  [7] &quot;DEPTHMAX&quot;           &quot;DevOpenPer_3000m&quot;   &quot;ELEV_PT&quot;           
+## [10] &quot;EvergreenPer_3000m&quot; &quot;HerbWetPer_3000m&quot;   &quot;MaxDepthCorrect&quot;   
+## [13] &quot;MeanDepthCorrect&quot;   &quot;ShrubPer_3000m&quot;     &quot;WSA_ECO9&quot;          
+## 
+##  Number of selected variables: 15
+</code></pre>
+
+<pre><code>##  Number.Variables Vars.in.Forest          OOB            sd.OOB      
+##  Min.   : 2.0     Length:13          Min.   :0.473   Min.   :0.0148  
+##  1st Qu.: 5.0     Class :character   1st Qu.:0.495   1st Qu.:0.0148  
+##  Median :10.0     Mode  :character   Median :0.499   Median :0.0148  
+##  Mean   :13.5                        Mean   :0.504   Mean   :0.0148  
+##  3rd Qu.:19.0                        3rd Qu.:0.516   3rd Qu.:0.0148  
+##  Max.   :37.0                        Max.   :0.531   Max.   :0.0148
+</code></pre>
+
+<pre><code>## lnCHLA ~ lnNTL
+</code></pre>
+
+<pre><code>## 
 ## Call:
-## lm(formula = Formula2, data = LMdata)
+## lm(formula = Formula, data = LMall)
 ## 
 ## Residuals:
 ##    Min     1Q Median     3Q    Max 
-## -6.384 -0.544  0.060  0.661  3.240 
+## -4.550 -0.634  0.070  0.742  3.447 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  -0.2124     0.0728   -2.92   0.0036 ** 
-## lnPTL         0.6971     0.0196   35.49   &lt;2e-16 ***
+## (Intercept)  -4.5032     0.1899   -23.7   &lt;2e-16 ***
+## lnNTL         1.0364     0.0293    35.4   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 1.04 on 1140 degrees of freedom
-##   (14 observations deleted due to missingness)
+## Residual standard error: 1.04 on 1141 degrees of freedom
+##   (5 observations deleted due to missingness)
+## Multiple R-squared:  0.523,  Adjusted R-squared:  0.523 
+## F-statistic: 1.25e+03 on 1 and 1141 DF,  p-value: &lt;2e-16
+</code></pre>
+
+<pre><code>## [1] 1.09
+</code></pre>
+
+<pre><code>## lnCHLA ~ lnPTL
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = Formula, data = LMall)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -6.387 -0.545  0.058  0.657  3.238 
+## 
+## Coefficients:
+##             Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)  -0.2106     0.0727    -2.9   0.0039 ** 
+## lnPTL         0.6972     0.0196    35.5   &lt;2e-16 ***
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 1.04 on 1141 degrees of freedom
+##   (5 observations deleted due to missingness)
 ## Multiple R-squared:  0.525,  Adjusted R-squared:  0.525 
-## F-statistic: 1.26e+03 on 1 and 1140 DF,  p-value: &lt;2e-16
+## F-statistic: 1.26e+03 on 1 and 1141 DF,  p-value: &lt;2e-16
+</code></pre>
+
+<pre><code>## [1] 1.085
+</code></pre>
+
+<pre><code>## lnCHLA ~ lnNTL + lnPTL
 </code></pre>
 
 <pre><code>## 
 ## Call:
-## lm(formula = Formula3, data = LMdata)
+## lm(formula = Formula, data = LMall)
 ## 
 ## Residuals:
 ##    Min     1Q Median     3Q    Max 
-## -5.137 -0.530  0.079  0.639  3.425 
+## -5.134 -0.532  0.088  0.634  3.424 
 ## 
 ## Coefficients:
 ##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  -2.8049     0.2246   -12.5   &lt;2e-16 ***
-## lnNTL         0.5660     0.0467    12.1   &lt;2e-16 ***
-## lnPTL         0.3901     0.0314    12.4   &lt;2e-16 ***
+## (Intercept)  -2.8154     0.2242   -12.6   &lt;2e-16 ***
+## lnNTL         0.5688     0.0466    12.2   &lt;2e-16 ***
+## lnPTL         0.3888     0.0313    12.4   &lt;2e-16 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.983 on 1139 degrees of freedom
-##   (14 observations deleted due to missingness)
-## Multiple R-squared:  0.579,  Adjusted R-squared:  0.579 
-## F-statistic:  784 on 2 and 1139 DF,  p-value: &lt;2e-16
+## Residual standard error: 0.981 on 1140 degrees of freedom
+##   (5 observations deleted due to missingness)
+## Multiple R-squared:  0.58,   Adjusted R-squared:  0.58 
+## F-statistic:  788 on 2 and 1140 DF,  p-value: &lt;2e-16
+</code></pre>
+
+<pre><code>## [1] 0.96
+</code></pre>
+
+<pre><code>## lnCHLA ~ lnNTL + lnPTL + lnTOC + lnTURB + lnK + lnNPratio
 </code></pre>
 
 <pre><code>## 
 ## Call:
-## lm(formula = Formula4, data = LMdata)
+## lm(formula = Formula, data = LMall)
 ## 
 ## Residuals:
 ##    Min     1Q Median     3Q    Max 
-## -5.579 -0.462  0.072  0.600  3.381 
+## -5.702 -0.461  0.068  0.604  3.358 
 ## 
 ## Coefficients:
-##             Estimate Std. Error t value Pr(&gt;|t|)    
-## (Intercept)  -1.8717     0.2552   -7.33  4.2e-13 ***
-## lnNTL         0.4746     0.0562    8.44  &lt; 2e-16 ***
-## lnPTL         0.0898     0.0350    2.57     0.01 *  
-## lnTOC        -0.0151     0.0529   -0.29     0.78    
-## lnTURB        0.4939     0.0330   14.97  &lt; 2e-16 ***
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   -1.5141     0.2622   -5.78  9.9e-09 ***
+## lnNTL          0.4684     0.0572    8.19  6.7e-16 ***
+## lnPTL          0.1471     0.0355    4.14  3.7e-05 ***
+## lnTOC          0.0270     0.0533    0.51     0.61    
+## lnTURB         0.4735     0.0326   14.52  &lt; 2e-16 ***
+## lnK           -0.1234     0.0278   -4.44  9.9e-06 ***
+## lnNPratioyes  -0.4113     0.0818   -5.03  5.8e-07 ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
 ## 
-## Residual standard error: 0.898 on 1137 degrees of freedom
-##   (14 observations deleted due to missingness)
-## Multiple R-squared:  0.649,  Adjusted R-squared:  0.648 
-## F-statistic:  527 on 4 and 1137 DF,  p-value: &lt;2e-16
+## Residual standard error: 0.882 on 1136 degrees of freedom
+##   (5 observations deleted due to missingness)
+## Multiple R-squared:  0.662,  Adjusted R-squared:  0.66 
+## F-statistic:  371 on 6 and 1136 DF,  p-value: &lt;2e-16
+</code></pre>
+
+<pre><code>## [1] 0.7729
+</code></pre>
+
+<pre><code>## lnCHLA ~ lnNTL + lnPTL + lnTOC + lnTURB + lnK + lnNPratio + WSA9_CPL + 
+##     WSA9_NAP + WSA9_UMW + WSA9_TPL + WSA9_SPL + WSA9_XER + WSA9_NPL + 
+##     WSA9_SAP
+</code></pre>
+
+<pre><code>## 
+## Call:
+## lm(formula = Formula, data = LMall)
+## 
+## Residuals:
+##    Min     1Q Median     3Q    Max 
+## -4.915 -0.431  0.043  0.516  2.664 
+## 
+## Coefficients: (1 not defined because of singularities)
+##              Estimate Std. Error t value Pr(&gt;|t|)    
+## (Intercept)   -1.5332     0.2505   -6.12  1.3e-09 ***
+## lnNTL          0.4555     0.0536    8.50  &lt; 2e-16 ***
+## lnPTL          0.1465     0.0332    4.41  1.1e-05 ***
+## lnTOC          0.0776     0.0522    1.49  0.13718    
+## lnTURB         0.4215     0.0309   13.63  &lt; 2e-16 ***
+## lnK           -0.0291     0.0300   -0.97  0.33258    
+## lnNPratioyes  -0.6262     0.0981   -6.38  2.5e-10 ***
+## WSA9_CPLyes    0.3754     0.1069    3.51  0.00046 ***
+## WSA9_NAPyes   -0.2629     0.1075   -2.45  0.01463 *  
+## WSA9_UMWyes   -0.4422     0.1052   -4.20  2.8e-05 ***
+## WSA9_TPLyes   -0.1025     0.1035   -0.99  0.32241    
+## WSA9_SPLyes   -0.4740     0.1056   -4.49  7.9e-06 ***
+## WSA9_XERyes   -0.8716     0.1146   -7.60  6.0e-14 ***
+## WSA9_NPLyes   -1.2626     0.1411   -8.95  &lt; 2e-16 ***
+## WSA9_SAPyes        NA         NA      NA       NA    
+## ---
+## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1
+## 
+## Residual standard error: 0.807 on 1129 degrees of freedom
+##   (5 observations deleted due to missingness)
+## Multiple R-squared:  0.719,  Adjusted R-squared:  0.716 
+## F-statistic:  222 on 13 and 1129 DF,  p-value: &lt;2e-16
+</code></pre>
+
+<pre><code>## [1] 0.643
 </code></pre>
 
 <p>5.Chl a TS ~ RF(varSelRF variables) - single randomForest run
@@ -288,6 +474,109 @@ hr {
 <li>Kappa</li>
 </ul></li>
 </ul>
+
+<pre><code>## Loading required package: party
+</code></pre>
+
+<pre><code>## Warning: package &#39;party&#39; was built under R version 3.0.3
+</code></pre>
+
+<pre><code>## Loading required package: grid
+## Loading required package: zoo
+</code></pre>
+
+<pre><code>## Warning: package &#39;zoo&#39; was built under R version 3.0.3
+</code></pre>
+
+<pre><code>## 
+## Attaching package: &#39;zoo&#39;
+## 
+## The following objects are masked from &#39;package:base&#39;:
+## 
+##     as.Date, as.Date.numeric
+## 
+## Loading required package: sandwich
+</code></pre>
+
+<pre><code>## Warning: package &#39;sandwich&#39; was built under R version 3.0.3
+</code></pre>
+
+<pre><code>## Loading required package: strucchange
+</code></pre>
+
+<pre><code>## Warning: package &#39;strucchange&#39; was built under R version 3.0.3
+</code></pre>
+
+<pre><code>## Loading required package: modeltools
+## Loading required package: stats4
+</code></pre>
+
+<p><img src="data:image/png;base64,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" alt="plot of chunk mob"/> </p>
+
+<pre><code>##           PercentImperv_300m WaterPer_300m IceSnowPer_300m DevOpenPer_300m
+## statistic              7.704          4.51           3.491         13.5400
+## p.value                1.000          1.00           1.000          0.9989
+##           DevLowPer_300m DevMedPer_300m DevHighPer_300m BarrenPer_300m
+## statistic            6.9        18.0015         20.3611          6.635
+## p.value              1.0         0.6653          0.3946          1.000
+##           DeciduousPer_300m EvergreenPer_300m MixedForPer_300m
+## statistic           16.3810             9.781            8.866
+## p.value              0.8848             1.000            1.000
+##           ShrubPer_300m GrassPer_300m PasturePer_300m CropsPer_300m
+## statistic         5.853         2.904           7.231       12.9251
+## p.value           1.000         1.000           1.000        0.9998
+##           WoodyWetPer_300m HerbWetPer_300m PercentImperv_3000m
+## statistic            7.553           7.455               10.87
+## p.value              1.000           1.000                1.00
+##           WaterPer_3000m IceSnowPer_3000m DevOpenPer_3000m DevLowPer_3000m
+## statistic          7.587             3.82          14.3492           11.23
+## p.value            1.000             1.00           0.9929            1.00
+##           DevMedPer_3000m DevHighPer_3000m BarrenPer_3000m
+## statistic         13.4265          14.2742             4.3
+## p.value            0.9992           0.9939             1.0
+##           DeciduousPer_3000m EvergreenPer_3000m MixedForPer_3000m
+## statistic            21.8869              7.301              11.2
+## p.value               0.2015              1.000               1.0
+##           ShrubPer_3000m GrassPer_3000m PasturePer_3000m CropsPer_3000m
+## statistic        13.4685          8.927            9.637          7.859
+## p.value           0.9991          1.000            1.000          1.000
+##           WoodyWetPer_3000m HerbWetPer_3000m AlbersX   AlbersY  LakeArea
+## statistic           18.1176            11.12 15.1290 3.440e+01 31.159980
+## p.value              0.6472             1.00  0.9731 5.923e-04  0.002794
+##           LakePerim ShoreDevel BASINAREA DEPTHMAX   ELEV_PT DO2_2M
+## statistic 37.441849   28.34929  25.52221 24.92714 30.691965  11.26
+## p.value    0.000136    0.01051   0.03896  0.05116  0.003488   1.00
+##           PH_FIELD  COND     ANC      TURB  TOC   DOC     NH4 NO3_NO2   CL
+## statistic    12.55 7.965 25.8639 4.331e+01 6.38 8.832 17.3204   5.377 8.85
+## p.value       1.00 1.000  0.0333 7.618e-06 1.00 1.000  0.7677   1.000 1.00
+##             NO3   SO4    CA      MG    Na       K COLOR  SIO2    H    OH
+## statistic 4.071 6.791 11.51 15.5063 9.834 16.4149 11.98 4.509 8.92 9.518
+## p.value   1.000 1.000  1.00  0.9549 1.000  0.8813  1.00 1.000 1.00 1.000
+##            NH4ION CATSUM ANSUM2 ANDEF2  SOBC BALANCE2 ORGION CONCAL2
+## statistic 23.1174  8.146  7.696   4.03 8.146    3.212  7.921   8.127
+## p.value    0.1162  1.000  1.000   1.00 1.000    1.000  1.000   1.000
+##           CONDHO2    TmeanW    DDs45 MaxLength  MaxWidth MeanWidth
+## statistic   9.679 3.675e+01 25.28700 32.135327 3.654e+01 3.580e+01
+## p.value     1.000 1.901e-04  0.04339  0.001756 2.111e-04 3.017e-04
+##              FetchN  FetchNE    FetchE  FetchSE MaxDepthCorrect
+## statistic 3.421e+01 26.11316 32.283856 26.11316         14.3957
+## p.value   6.492e-04  0.02968  0.001636  0.02968          0.9923
+##           VolumeCorrect MeanDepthCorrect NPratio WSA9_WMT  WSA9_CPL
+## statistic     3.610e+01          14.2783 23.1162    4.498 3.274e+01
+## p.value       2.612e-04           0.9939  0.1163    1.000 3.370e-05
+##           WSA9_NAP  WSA9_UMW WSA9_TPL WSA9_SPL WSA9_XER WSA9_NPL WSA9_SAP
+## statistic   7.2872 3.157e+01   0.8126    2.383    5.937        0   6.9469
+## p.value     0.9976 5.922e-05   1.0000    1.000    1.000       NA   0.9991
+</code></pre>
+
+<pre><code>## [1] 0.5608
+</code></pre>
+
+<pre><code>## &#39;log Lik.&#39; -1131 (df=49)
+</code></pre>
+
+<pre><code>## [1] 2361
+</code></pre>
 
 <h3>Question 2. Are <em>in situ</em> nutrient and water quality data required to make predicitions of trophic state or can GIS derived information on lake and land use/land cover also provide quality predictions?</h3>
 
