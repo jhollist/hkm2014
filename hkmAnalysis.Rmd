@@ -32,10 +32,11 @@ data(hkm2014Data)
                 chlaCat[hkm2014Data$CHLA<=quantile(hkm2014Data$CHLA,.25,na.rm=T)]<-'LOW'
                 chlaCat[hkm2014Data$CHLA>=quantile(hkm2014Data$CHLA,.75,na.rm=T)]<-'HIGH'
                 chlaCat[is.na(hkm2014Data$CHLA)]<-NA
- 
+
+	
 		table(chlaCat,useNA='ifany')
 		hkm2014Data$chlaCat<-chlaCat
-
+		hkm2014Data$chlaCat<-factor(hkm2014Data$chlaCat,ordered=T,levels=c("LOW","MED","HIGH"))
 
 	#select the predictor variable
 		omit<-unique(c(grep("NLA_ID",names(hkm2014Data)),  #NLA_ID
@@ -49,6 +50,7 @@ data(hkm2014Data)
 						grep("SECMEAN",names(hkm2014Data)),  		 #SECMEAN dropped-using TURB instead
 						grep("CHLA",names(hkm2014Data)),         #CHLA dropped; it is the response variable
 						grep("bvCat",names(hkm2014Data)),        #bvCat: biovolume category
+						grep("chlaCat",names(hkm2014Data)),      #chlaCat: new Chla category
 						grep("TS_",names(hkm2014Data))))         #Trophic State Classification Variables
 
 #create df with the predictor variables including  WSA_ECO9 as a categorical variable.	
@@ -325,9 +327,8 @@ use varSelRF to select the variables for linear model 4
 												 importance=TRUE,proximity=TRUE)
 
 		keep<-complete.cases(Pgis3k,hkm2014Data$TS_CHLA)
-		varSelGIS3k.var<-c("AlbersX","AlbersY","BASINAREA","CropsPer_3000m","DDs45","DeciduousPer_3000m","DEPTHMAX"
-												,"DevOpenPer_3000m","ELEV_PT","EvergreenPer_3000m","HerbWetPer_3000m","MaxDepthCorrect"
-												,"MeanDepthCorrect","ShrubPer_3000m","WSA_ECO9" )
+		varSelGIS3k.var<-c("AlbersX","AlbersY","CropsPer_3000m","DEPTHMAX","ELEV_PT","EvergreenPer_3000m",
+											 "MeanDepthCorrect","WSA_ECO9" )
 		
 		Pgis3kvarSel.RF<-randomForest(hkm2014Data[keep,'TS_CHLA']~., data=Pgis3k[keep,varSelGIS3k.var],ntree =10000,
 												 importance=TRUE,proximity=TRUE)
