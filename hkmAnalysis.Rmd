@@ -93,6 +93,7 @@ use varSelRF to select the variables for linear model 4
 		dropFrac<-0.2 #(0.2) proportion of variable to drop after each iteration
 	#select complete cases
 		keep<-complete.cases(Pall,hkm2014Data$TS_CHLA)
+<<<<<<< HEAD
 	#run rf.s
 		print("RF of all variables with both 300m and 3000m  percent nlcd")
 			varSelAll<-varSelRF(Pall[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, 
@@ -115,6 +116,15 @@ use varSelRF to select the variables for linear model 4
 			#view results
 				varSelAll3k  #Selected variables: c(')
 				summary(varSelAll3k$selec.history)
+=======
+	#run rf
+		varSelAll<-varSelRF(Pall[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = 10000, 
+												 ntreeIterat = 5000, vars.drop.frac = 0.2)
+	#view results
+		varSelAll     #Selected variables: c('NPratio,'NTL','PTL','TOC','TURB','K',WSA_ECO9)
+		summary(varSelAll$selec.history)
+		plot(varSelAll, which=2)
+>>>>>>> 59a3329acd4b2d42233c4b46104828a02f7de5f4
 
 #run for all GIS predictors
 	#select complete cases
@@ -192,6 +202,65 @@ use varSelRF to select the variables for linear model 4
 
 
 5.Chl a TS ~ RF(varSelRF variables) - single randomForest run
+
+```{r exploreRF, echo=FALSE, cache=FALSE}
+## Exploring different RF outputs
+#run for all predictors
+	#select complete cases
+		keep<-complete.cases(Pall,hkm2014Data$TS_CHLA)
+
+		#random forest with all our variables
+		full.RF<-randomForest(hkm2014Data[keep,'TS_CHLA']~., data=Pall[keep,],ntree = 10000,
+												 importance=TRUE,proximity=TRUE)
+
+		#random forest on only varSel variables
+		varSelAll.var<-c('NPratio','NTL','PTL','TOC','TURB','K','WSA_ECO9')
+	
+		varSelAll.RF<-randomForest(hkm2014Data[keep,'TS_CHLA']~., data=Pall[keep,varSelAll.var],ntree =10000,
+												 importance=TRUE,proximity=TRUE)
+
+
+		#random forest on landscape variables at 300 and 3000 scale
+		keep<-complete.cases(Pgis300,hkm2014Data$TS_CHLA)
+		Pgis300.RF<-randomForest(hkm2014Data[keep,'TS_CHLA']~., data=Pgis300[keep,],ntree =10000,
+												 importance=TRUE,proximity=TRUE)
+
+		keep<-complete.cases(Pgis3k,hkm2014Data$TS_CHLA)
+		Pgis3k.RF<-randomForest(hkm2014Data[keep,'TS_CHLA']~., data=Pgis3k[keep,],ntree =10000,
+												 importance=TRUE,proximity=TRUE)
+
+
+		#random forest on varSel landscape variables at 300 and 3000 scale
+		keep<-complete.cases(Pgis300,hkm2014Data$TS_CHLA)
+		varSelGIS300.var<-c("AlbersX","AlbersY","BASINAREA","CropsPer_300m","DDs45","DeciduousPer_300m",
+														"DEPTHMAX","ELEV_PT","EvergreenPer_300m","HerbWetPer_300m", "LakeArea","LakePerim"
+														,"MaxDepthCorrect","MaxLength","MeanDepthCorrect","PasturePer_300m","VolumeCorrect"
+														,"WoodyWetPer_300m","WSA_ECO9")
+
+		Pgis300varSel.RF<-randomForest(hkm2014Data[keep,'TS_CHLA']~., data=Pgis300[keep,varSelGIS300.var],ntree =10000,
+												 importance=TRUE,proximity=TRUE)
+
+		keep<-complete.cases(Pgis3k,hkm2014Data$TS_CHLA)
+		varSelGIS3k.var<-c("AlbersX","AlbersY","BASINAREA","CropsPer_3000m","DDs45","DeciduousPer_3000m","DEPTHMAX"
+												,"DevOpenPer_3000m","ELEV_PT","EvergreenPer_3000m","HerbWetPer_3000m","MaxDepthCorrect"
+												,"MeanDepthCorrect","ShrubPer_3000m","WSA_ECO9" )
+		
+		Pgis3kvarSel.RF<-randomForest(hkm2014Data[keep,'TS_CHLA']~., data=Pgis3k[keep,varSelGIS3k.var],ntree =10000,
+												 importance=TRUE,proximity=TRUE)
+
+		#random forest on varSel landscape variables at both scales
+		keep<-complete.cases(Pgis,hkm2014Data$TS_CHLA)
+	
+		varSelGIS.var<- c("AlbersX","AlbersY","CropsPer_3000m","DEPTHMAX","EvergreenPer_3000m"
+											,"EvergreenPer_300m","WSA_ECO9")
+
+		PgisvarSel.RF<-randomForest(hkm2014Data[keep,'TS_CHLA']~., data=Pgis[keep,varSelGIS.var],ntree =10000,
+												 importance=TRUE,proximity=TRUE)
+
+												
+
+```
+
 6.Chl a TS ~ Random Forest Consensus - single randomForest run
 
 *ANALYSIS*
