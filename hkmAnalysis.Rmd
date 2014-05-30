@@ -27,6 +27,17 @@ data(hkm2014Data)
 	#add a variable for NP ratio
 		hkm2014Data$NPratio<-hkm2014Data$NTL/hkm2014Data$PTL
 
+	#Create a Chla Category with Low=first Quartile (Q1); Med=Q2 & Q3; High=Q4
+                chlaCat<-rep('MED',nrow(hkm2014Data))
+                chlaCat[hkm2014Data$CHLA<=quantile(hkm2014Data$CHLA,.25,na.rm=T)]<-'LOW'
+                chlaCat[hkm2014Data$CHLA>=quantile(hkm2014Data$CHLA,.75,na.rm=T)]<-'HIGH'
+                chlaCat[is.na(hkm2014Data$CHLA)]<-NA
+
+	
+		table(chlaCat,useNA='ifany')
+		hkm2014Data$chlaCat<-chlaCat
+		hkm2014Data$chlaCat<-factor(hkm2014Data$chlaCat,ordered=T,levels=c("LOW","MED","HIGH"))
+
 	#select the predictor variable
 		omit<-unique(c(grep("NLA_ID",names(hkm2014Data)),  #NLA_ID
 						grep("Comid",names(hkm2014Data)),				 #Comid
@@ -39,10 +50,15 @@ data(hkm2014Data)
 						grep("SECMEAN",names(hkm2014Data)),  		 #SECMEAN dropped-using TURB instead
 						grep("CHLA",names(hkm2014Data)),         #CHLA dropped; it is the response variable
 						grep("bvCat",names(hkm2014Data)),        #bvCat: biovolume category
+						grep("chlaCat",names(hkm2014Data)),      #chlaCat: new Chla category
 						grep("TS_",names(hkm2014Data))))         #Trophic State Classification Variables
 
 #create df with the predictor variables including  WSA_ECO9 as a categorical variable.	
 	Pall<-hkm2014Data[,-omit]  
+		#create df of All variables with 300m NLCD only
+			Pall300<-Pall[,-grep("3000m",names(Pall))]
+		#create df of all variables with 3000m NLCD only
+			Pall3k<-Pall[,-grep("300m",names(Pall))]
 
 #create df with the predictor variables including  WSA_ECO9 9 dummy variables.	
 	#df without WSA_ECO9
@@ -83,8 +99,36 @@ use varSelRF to select the variables for linear model 4
 
 ```{r run_varSelRF, echo=FALSE, cache=TRUE} 
 #run for all predictors
+	#intial conditions:
+		NTREE<-10000 #(10000) number of trees for first run
+		Niterations<-5000 #(5000) number of trees for subsequent runs
+		dropFrac<-0.2 #(0.2) proportion of variable to drop after each iteration
 	#select complete cases
 		keep<-complete.cases(Pall,hkm2014Data$TS_CHLA)
+<<<<<<< HEAD
+	#run rf.s
+		print("RF of all variables with both 300m and 3000m  percent nlcd")
+			varSelAll<-varSelRF(Pall[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, 
+												ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+				varSelAll  #Selected variables: c('NPratio,'NTL','PTL','TOC','TURB','K',WSA_ECO9)
+				summary(varSelAll$selec.history)
+				#plot(varSelAll, which=2)
+
+		print("RF of all variables with only the 300m percent nlcd")
+			varSelAll300<-varSelRF(Pall300[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, 
+												ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+				varSelAll300  #Selected variables: c(')
+				summary(varSelAll300$selec.history)
+		
+		print("RF of all variables with only the 3000m percent nlcd")
+			varSelAll3k<-varSelRF(Pall3k[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE,
+												ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+				varSelAll3k  #Selected variables: c(')
+				summary(varSelAll3k$selec.history)
+=======
 	#run rf
 		varSelAll<-varSelRF(Pall[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = 10000, 
 												 ntreeIterat = 5000, vars.drop.frac = 0.2)
@@ -92,40 +136,107 @@ use varSelRF to select the variables for linear model 4
 		varSelAll     #Selected variables: c('NPratio,'NTL','PTL','TOC','TURB','K',WSA_ECO9)
 		summary(varSelAll$selec.history)
 		plot(varSelAll, which=2)
+>>>>>>> 59a3329acd4b2d42233c4b46104828a02f7de5f4
 
 #run for all GIS predictors
 	#select complete cases
 		keep<-complete.cases(Pgis,hkm2014Data$TS_CHLA)
 	#run rf
-		varSelGIS<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = 10000, 
-												 ntreeIterat = 5000, vars.drop.frac = 0.2)
-	#view results
-		varSelGIS  #Selected variables: c("AlbersX","AlbersY","CropsPer_3000m","DEPTHMAX",
+		print("RF of GIS variables with both 300m and 3000m  percent nlcd")
+			varSelGIS<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, 
+												 ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+				varSelGIS  #Selected variables: c("AlbersX","AlbersY","CropsPer_3000m","DEPTHMAX",
                                     #  "EvergreenPer_3000m","EvergreenPer_300m","WSA_ECO9")
-		summary(varSelGIS$selec.history)
-		plot(varSelGIS, which=2)
+				summary(varSelGIS$selec.history)
+		
+		print("RF of GIS variables with only 300m percent nlcd")
+			varSelGIS300<-varSelRF(Pgis300[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, 
+												 ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+				varSelGIS300  #Selected variables: c("AlbersX","AlbersY","BASINAREA","CropsPer_300m","DDs45","DeciduousPer_300m","DEPTHMAX","ELEV_PT","EvergreenPer_300m","HerbWetPer_300m", "LakeArea","LakePerim","MaxDepthCorrect","MaxLength","MeanDepthCorrect","PasturePer_300m","VolumeCorrect","WoodyWetPer_300m","WSA_ECO9")    
+				summary(varSelGIS300$selec.history)
 
-#run for GIS predictors with the 300m NLCD but without the 3000m NLCD
+		print("RF of GIS variables with only 3000m percent nlcd")
+			varSelGIS3k<-varSelRF(Pgis3k[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, 
+												 ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+			varSelGIS3k  #Selected variables: c("AlbersX","AlbersY","BASINAREA","CropsPer_3000m","DDs45","DeciduousPer_3000m","DEPTHMAX","DevOpenPer_3000m","ELEV_PT","EvergreenPer_3000m","HerbWetPer_3000m","MaxDepthCorrect","MeanDepthCorrect","ShrubPer_3000m","WSA_ECO9" )
+			summary(varSelGIS3k$selec.history)
+```
+
+
+
+
+
+```{r newChlaCategory, echo=FALSE, cache=FALSE}
+##New varSelRF for chlaCat
+#run for all predictors
+	#intial conditions:
+		NTREE<-10000 #(10000) number of trees for first run
+		Niterations<-5000 #(5000) number of trees for subsequent runs
+		dropFrac<-0.2 #(0.2) proportion of variable to drop after each iteration
 	#select complete cases
-		keep<-complete.cases(Pgis300,hkm2014Data$TS_CHLA)
+		keep<-complete.cases(Pall,hkm2014Data$chlaCat)
+<<<<<<< HEAD
+	#run rf.s
+		print("RF of all variables with both 300m and 3000m  percent nlcd")
+			varSelAll<-varSelRF(Pall[keep,],hkm2014Data[keep,'chlaCat'],ntree = NTREE, 
+												ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+				varSelAll  #Selected variables: c('NPratio,'NTL','PTL','TOC','TURB','K',WSA_ECO9)
+				summary(varSelAll$selec.history)
+				#plot(varSelAll, which=2)
+
+		print("RF of all variables with only the 300m percent nlcd")
+			varSelAll300<-varSelRF(Pall300[keep,],hkm2014Data[keep,'chlaCat'],ntree = NTREE, 
+												ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+				varSelAll300  #Selected variables: c(')
+				summary(varSelAll300$selec.history)
+		
+		print("RF of all variables with only the 3000m percent nlcd")
+			varSelAll3k<-varSelRF(Pall3k[keep,],hkm2014Data[keep,'chlaCat'],ntree = NTREE,
+												ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+				varSelAll3k  #Selected variables: c(')
+				summary(varSelAll3k$selec.history)
+=======
 	#run rf
-		varSelGIS300<-varSelRF(Pgis300[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = 10000, 
+		varSelAll<-varSelRF(Pall[keep,],hkm2014Data[keep,'chlaCat'],ntree = 10000, 
 												 ntreeIterat = 5000, vars.drop.frac = 0.2)
 	#view results
-		varSelGIS300  #Selected variables: c("AlbersX","AlbersY","BASINAREA","CropsPer_300m","DDs45","DeciduousPer_300m","DEPTHMAX","ELEV_PT","EvergreenPer_300m","HerbWetPer_300m", "LakeArea","LakePerim","MaxDepthCorrect","MaxLength","MeanDepthCorrect","PasturePer_300m","VolumeCorrect","WoodyWetPer_300m","WSA_ECO9"    
-		summary(varSelGIS300$selec.history)
-		plot(varSelGIS300, which=2)
+		varSelAll     #Selected variables: c('NPratio,'NTL','PTL','TOC','TURB','K',WSA_ECO9)
+		summary(varSelAll$selec.history)
+		plot(varSelAll, which=2)
+>>>>>>> 59a3329acd4b2d42233c4b46104828a02f7de5f4
 
-#run for GIS predictors with the 3000m NLCD but without the 300m NLCD
+#run for all GIS predictors
 	#select complete cases
-		keep<-complete.cases(Pgis3k,hkm2014Data$TS_CHLA)
+		keep<-complete.cases(Pgis,hkm2014Data$chlaCat)
 	#run rf
-		varSelGIS3k<-varSelRF(Pgis3k[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = 10000, 
-												 ntreeIterat = 5000, vars.drop.frac = 0.2)
-	#view results
-		varSelGIS3k  #Selected variables: c("AlbersX","AlbersY","BASINAREA","CropsPer_3000m","DDs45","DeciduousPer_3000m","DEPTHMAX","DevOpenPer_3000m","ELEV_PT","EvergreenPer_3000m","HerbWetPer_3000m","MaxDepthCorrect","MeanDepthCorrect","ShrubPer_3000m","WSA_ECO9" )
-		summary(varSelGIS3k$selec.history)
-		plot(varSelGIS3k, which=2)
+		print("RF of GIS variables with both 300m and 3000m  percent nlcd")
+			varSelGIS<-varSelRF(Pgis[keep,],hkm2014Data[keep,'chlaCat'],ntree = NTREE, 
+												 ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+				varSelGIS  #Selected variables: c("AlbersX","AlbersY","CropsPer_3000m","DEPTHMAX",
+                                    #  "EvergreenPer_3000m","EvergreenPer_300m","WSA_ECO9")
+				summary(varSelGIS$selec.history)
+		
+		print("RF of GIS variables with only 300m percent nlcd")
+			varSelGIS300<-varSelRF(Pgis300[keep,],hkm2014Data[keep,'chlaCat'],ntree = NTREE, 
+												 ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+				varSelGIS300  #Selected variables: c("AlbersX","AlbersY","BASINAREA","CropsPer_300m","DDs45","DeciduousPer_300m","DEPTHMAX","ELEV_PT","EvergreenPer_300m","HerbWetPer_300m", "LakeArea","LakePerim","MaxDepthCorrect","MaxLength","MeanDepthCorrect","PasturePer_300m","VolumeCorrect","WoodyWetPer_300m","WSA_ECO9")    
+				summary(varSelGIS300$selec.history)
+
+		print("RF of GIS variables with only 3000m percent nlcd")
+			varSelGIS3k<-varSelRF(Pgis3k[keep,],hkm2014Data[keep,'chlaCat'],ntree = NTREE, 
+												 ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+			varSelGIS3k  #Selected variables: c("AlbersX","AlbersY","BASINAREA","CropsPer_3000m","DDs45","DeciduousPer_3000m","DEPTHMAX","DevOpenPer_3000m","ELEV_PT","EvergreenPer_3000m","HerbWetPer_3000m","MaxDepthCorrect","MeanDepthCorrect","ShrubPer_3000m","WSA_ECO9" )
+			summary(varSelGIS3k$selec.history)
+
 ```
 
 
@@ -136,7 +247,7 @@ use varSelRF to select the variables for linear model 4
 			LMall$NPratio<-Pall$NPratio
 		#Log transform the data
 			LMall<-log(LMall) #log transform data
-				names(LMall)<-paste('ln',Vars,sep='')
+				names(LMall)<-paste('ln',names(LMall),sep='')
 		#add WSA9 dummies
 			LMall[,7:15]<-Pall1[,grep("WSA",names(Pall1),value=TRUE)]
 
@@ -144,27 +255,32 @@ use varSelRF to select the variables for linear model 4
 	#run linear models 
 		#1. lnCHLA ~ lnNTL
 				Formula<-formula(paste(names(LMall)[1],'~',paste(names(LMall)[2], collapse="+"))) 
+					print(Formula)
 					LM<-lm(Formula,data=LMall)
 						summary(LM) 						#adjR2== 0.5231
 						mean(residuals(LM)^2)		#rmse == 1.0899
 		#2. lnCHLA ~ lnPTL
 				Formula<- formula(paste(names(LMall)[1],'~',paste(names(LMall)[3], collapse="+"))) 
+					print(Formula)
 					LM<-lm(Formula,data=LMall)
 						summary(LM) 						#adjR2== 0.5251
 						mean(residuals(LM)^2)		#rmse == 1.0854
 		#3. lnCHLA ~ lnNTL + lnPTL
 				Formula<- formula(paste(names(LMall)[1],'~',paste(names(LMall)[2:3], collapse="+"))) 
+					print(Formula)
 					LM<-lm(Formula,data=LMall)
 						summary(LM) 						#adjR2== 0.5795
 						mean(residuals(LM)^2)		#rmse == 0.9600
     #4. lnCHLA ~ lnNTL + lnPTL + lnTOC + lnTURB + lnK +lnNPratio
 				Formula<- formula(paste(names(LMall)[1],'~',paste(names(LMall)[2:7], collapse="+"))) 
+					print(Formula)
 					LM<-lm(Formula,data=LMall)
 						summary(LM) 						#adjR2== 0.6603
 						mean(residuals(LM)^2)		#rmse == 0.7729
 		#5. lnCHLA ~ lnNTL + lnPTL + lnTOC + lnTURB + lnK + WSA9_WMT + WSA9_CPL + 
     						#WSA9_NAP + WSA9_UMW + WSA9_TPL + WSA9_SPL + WSA9_XER + WSA9_NPL + WSA9_SAP
 				Formula<- formula(paste(names(LMall)[1],'~',paste(names(LMall)[-1], collapse="+"))) 
+					print(Formula)
 					LM<-lm(Formula,data=LMall)
 						summary(LM) 						#adjR2== 0.7156
 						mean(residuals(LM)^2)		#rmse == 0.6430
@@ -211,9 +327,8 @@ use varSelRF to select the variables for linear model 4
 												 importance=TRUE,proximity=TRUE)
 
 		keep<-complete.cases(Pgis3k,hkm2014Data$TS_CHLA)
-		varSelGIS3k.var<-c("AlbersX","AlbersY","BASINAREA","CropsPer_3000m","DDs45","DeciduousPer_3000m","DEPTHMAX"
-												,"DevOpenPer_3000m","ELEV_PT","EvergreenPer_3000m","HerbWetPer_3000m","MaxDepthCorrect"
-												,"MeanDepthCorrect","ShrubPer_3000m","WSA_ECO9" )
+		varSelGIS3k.var<-c("AlbersX","AlbersY","CropsPer_3000m","DEPTHMAX","ELEV_PT","EvergreenPer_3000m",
+											 "MeanDepthCorrect","WSA_ECO9" )
 		
 		Pgis3kvarSel.RF<-randomForest(hkm2014Data[keep,'TS_CHLA']~., data=Pgis3k[keep,varSelGIS3k.var],ntree =10000,
 												 importance=TRUE,proximity=TRUE)
@@ -259,7 +374,7 @@ require(party)
 #level of ? = 0.05 and the nodes are split with a required minimal segment size of 40
 #observations. The control parameters are thus set to
   ctrl <- mob_control(alpha = 0.05, bonferroni = TRUE, minsplit = 20,
-    objfun = deviance, verbose = TRUE)
+    objfun = deviance, verbose = F)
     
 #select the covariates
   Cov<-names(mobData)[-c(1:3)]
@@ -333,7 +448,7 @@ plot(allPerc_varsel, which=2)
 
 ```{r gisLandscapePercent, echo=FALSE, cache=FALSE, eval=FALSE}
 gisVarDF<-na.omit(hkm2014Data[,c(gisNames,lulcPercentNames,respName)])
-gisPerc_varsel<-varSelRF(gisVarDF[,1:dim(gisVarDF)[2]-1],gisVarDF[,respName],ntree = 10000, 
+gisPerc_varsel<-varSelRF(gisVarDF[,1:dim(gisVarDF)[2]-1],gisVarDF[,respName],ntree = NTREE, 
 												 ntreeIterat = 5000,vars.drop.frac = 0.2)
 summary(gisPerc_varsel$selec.history)
 plot(gisPerc_varsel, which=2)
