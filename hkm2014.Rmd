@@ -17,6 +17,8 @@ Environmental Determinants of Lake Trophic Status in the Conterminous United Sta
 
 Abstract
 --------
+Productivity of lentic ecosystems has been well studied and predicting the algal community response is known to be largely a function of nitrogen and phosphorus.   Most existing predictive models take advantage of this well studied relationship to predict chlorphyl a and lake trophic state.  While this provides reliable predictions, it requires *in situ* water quality data in order to paramterize the model.  This limits the application   
+
 
 
 #### Keywords: National Lakes Assessment, Cyanobacteria, Chlorophyl a, National Land Cover Dataset, Random Forest, Data Mining
