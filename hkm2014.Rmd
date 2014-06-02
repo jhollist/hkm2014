@@ -1,6 +1,7 @@
 ```{r setup, include=FALSE, echo=FALSE}
-opts_chunk$set(dev = 'pdf', fig.width=6, fig.height=4.3)
-devtools::install_github("hkm","jhollist")
+#opts_chunk$set(dev = 'pdf', fig.width=6, fig.height=4.3)
+#devtools::install_github("hkm","jhollist")
+library(hkm)
 data(hkm2014Data)
 ```
 
@@ -17,6 +18,8 @@ Environmental Determinants of Lake Trophic Status in the Conterminous United Sta
 
 Abstract
 --------
+Productivity of lentic ecosystems has been well studied and predicting the algal community response is known to be largely a function of nitrogen and phosphorus.   Most existing predictive models take advantage of this well studied relationship to predict chlorphyl a and lake trophic state.  While this provides reliable predictions, it requires *in situ* water quality data in order to paramterize the model.  This limits the application of these models to lakes with existing and, more importanly, available water quality data.  To expand our ability to predict in lakes without water quality data, we take advantage of the availability of a large national lakes water quality database, land use/land cover data, lake morphometry data, other universally available data, and modern data mining approaches to build and assess alternative models of lake tropic state that may be more universally applied.  We use random forests and random forest variable selection to identify variables to be used for predicting trophic status and we compare the classification accuracy of a variety of existing and novel models.  Adding in additional variables to the classic models of Chlorophyl *a* based trophic state improves predictions only by a small percentage.  Models based on universally available data alone are able to predict trophic state   
+
 
 
 #### Keywords: National Lakes Assessment, Cyanobacteria, Chlorophyl a, National Land Cover Dataset, Random Forest, Data Mining
