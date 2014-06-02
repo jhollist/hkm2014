@@ -87,86 +87,37 @@ The Predictor variables in Pall contains a mixture of variables that can be asse
 ```
 
 ### response variable selection 
-For the Random Forest analysis we create the  categorical response variable "chlaCat".  This variable has three categories:
+For the Random Forest analysis we need a response variable.  For now just just the TS_CHLA.  
 
-1. Low=lakes with Chla concentrations in the first quartile of the Chla distribution
-2. Med=lakes with Chla concentrations in the second and third quartiles of the Chla distribution
-3. High=lakes with Chla concentrations in the fourth quartile of the Chla distribution
+
 ```{r responseSelection, echo=FALSE, cache=FALSE} 
-	#Create a Chla Category with Low=first Quartile (Q1); Med=Q2 & Q3; High=Q4
-		chlaCat<-factor(rep('MED',nrow(hkm2014Data)),ordered=T,levels=c("LOW","MED","HIGH"))
-    chlaCat[hkm2014Data$CHLA<=quantile(hkm2014Data$CHLA,.25,na.rm=T)]<-'LOW'
-    chlaCat[hkm2014Data$CHLA>=quantile(hkm2014Data$CHLA,.75,na.rm=T)]<-'HIGH'
-    chlaCat[is.na(hkm2014Data$CHLA)]<-NA
-			table(chlaCat,useNA='ifany')	
+	TS_CHLA<-hkm2014Data$TS_CHLA
+	table(TS_CHLA)
 ```
 
+### Analysis:  Run varSelRF multiple time to see if the same variables are selected each time.
+
+
 ```{r run_varSelRF, echo=FALSE, cache=TRUE} 
-#run for all predictors
-	#intial conditions:
-		NTREE<-10000 #(10000) number of trees for first run
-		Niterations<-5000 #(5000) number of trees for subsequent runs
-		dropFrac<-0.2 #(0.2) proportion of variable to drop after each iteration
-	#select complete cases
-		keep<-complete.cases(Pall,hkm2014Data$TS_CHLA)
-<<<<<<< HEAD
-	#run rf.s
-		print("RF of all variables with both 300m and 3000m  percent nlcd")
-			varSelAll<-varSelRF(Pall[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, 
-												ntreeIterat = Niterations, vars.drop.frac = dropFrac)
-			#view results
-				varSelAll  #Selected variables: c('NPratio,'NTL','PTL','TOC','TURB','K',WSA_ECO9)
-				summary(varSelAll$selec.history)
-				#plot(varSelAll, which=2)
-
-		print("RF of all variables with only the 300m percent nlcd")
-			varSelAll300<-varSelRF(Pall300[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, 
-												ntreeIterat = Niterations, vars.drop.frac = dropFrac)
-			#view results
-				varSelAll300  #Selected variables: c(')
-				summary(varSelAll300$selec.history)
-		
-		print("RF of all variables with only the 3000m percent nlcd")
-			varSelAll3k<-varSelRF(Pall3k[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE,
-												ntreeIterat = Niterations, vars.drop.frac = dropFrac)
-			#view results
-				varSelAll3k  #Selected variables: c(')
-				summary(varSelAll3k$selec.history)
-=======
-	#run rf
-		varSelAll<-varSelRF(Pall[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = 10000, 
-												 ntreeIterat = 5000, vars.drop.frac = 0.2)
-	#view results
-		varSelAll     #Selected variables: c('NPratio,'NTL','PTL','TOC','TURB','K',WSA_ECO9)
-		summary(varSelAll$selec.history)
-		plot(varSelAll, which=2)
->>>>>>> 59a3329acd4b2d42233c4b46104828a02f7de5f4
-
 #run for all GIS predictors
+	#intial conditions:
+		NTREE<-1000 #(10000) number of trees for first run
+		Niterations<-500 #(5000) number of trees for subsequent runs
+		dropFrac<-0.1 #(0.2) proportion of variable to drop after each iteration
+	
 	#select complete cases
-		keep<-complete.cases(Pgis,hkm2014Data$TS_CHLA)
+		keep<-complete.cases(Pgis,TS_CHLA)
 	#run rf
-		print("RF of GIS variables with both 300m and 3000m  percent nlcd")
-			varSelGIS<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, 
-												 ntreeIterat = Niterations, vars.drop.frac = dropFrac)
-			#view results
-				varSelGIS  #Selected variables: c("AlbersX","AlbersY","CropsPer_3000m","DEPTHMAX",
-                                    #  "EvergreenPer_3000m","EvergreenPer_300m","WSA_ECO9")
-				summary(varSelGIS$selec.history)
-		
-		print("RF of GIS variables with only 300m percent nlcd")
-			varSelGIS300<-varSelRF(Pgis300[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, 
-												 ntreeIterat = Niterations, vars.drop.frac = dropFrac)
-			#view results
-				varSelGIS300  #Selected variables: c("AlbersX","AlbersY","BASINAREA","CropsPer_300m","DDs45","DeciduousPer_300m","DEPTHMAX","ELEV_PT","EvergreenPer_300m","HerbWetPer_300m", "LakeArea","LakePerim","MaxDepthCorrect","MaxLength","MeanDepthCorrect","PasturePer_300m","VolumeCorrect","WoodyWetPer_300m","WSA_ECO9")    
-				summary(varSelGIS300$selec.history)
-
-		print("RF of GIS variables with only 3000m percent nlcd")
-			varSelGIS3k<-varSelRF(Pgis3k[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, 
-												 ntreeIterat = Niterations, vars.drop.frac = dropFrac)
-			#view results
-			varSelGIS3k  #Selected variables: c("AlbersX","AlbersY","BASINAREA","CropsPer_3000m","DDs45","DeciduousPer_3000m","DEPTHMAX","DevOpenPer_3000m","ELEV_PT","EvergreenPer_3000m","HerbWetPer_3000m","MaxDepthCorrect","MeanDepthCorrect","ShrubPer_3000m","WSA_ECO9" )
-			summary(varSelGIS3k$selec.history)
+		GIS_1<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+		GIS_2<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+		GIS_3<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+		GIS_4<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+		GIS_5<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+		GIS_6<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+		GIS_7<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+		GIS_8<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+		GIS_9<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+		GIS_10<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
 ```
 
 
