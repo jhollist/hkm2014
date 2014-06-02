@@ -1,0 +1,172 @@
+---
+title: "Analysis for Hollister, Kreakie, Milstead"
+author: "Jeff Hollister, Betty Kreakie, Bryan Milstead"
+date: "Monday, April 28, 2014"
+output: pdf_document
+---
+
+```{r setup, include=FALSE, echo=FALSE, cache=TRUE}
+devtools::install_github("hkm","jhollist")
+library(hkm)
+library(varSelRF)
+data(hkm2014Data)  
+```
+
+## Main Question: Given that we have a unique combination of novel data, increased computational facilities, and an expanded geographic scope, what can we add to the classic understanding of the processes that are predictive of chlorophyll *a* and trophic state in lakes. 
+
+### Initital Predictor variable selection 
+We start by selecting the predictor variables. *A priori* we made the following decisions:
+
+1.  There are three water temperature measure based on the profile data for the first 2m of the water column, the mean (TmeanW), the min (TminW) and the max (TmaxW).  We decided to use TmeanW arbitrarily.
+
+2.  There are four estimates of growing degree days:  DDs40, DDs45, DDs50, and DDs55.  The number refers to the reference temperature used in the calculation.  It really shouldn't matter for our purposes so we arbitrarily chose DD45.
+
+3. The NLCD landcover was calculated as a percent and as total area in buffers of 300m, 1500m, and 3000m.  A fourth buffer scaled to the maximum inlake distance was also used.  We decided to use the percent landcover in the 300m (homeowner) and the 3000m buffers for the analysis.  *ANALYSIS*- as a check look at centroid distance matrix.
+
+4. Turbidity and Secchi provide similar information and either one can be estimated from the other.  Secchi is not accurate in lakes that are clear to the bottom so we choose to use Turbidity only.
+
+5.  We also decided to add a new variable for the NP ratio.  This is just a straight weight ratio and not the molecular weight ratio.  
+
+6.  If the WSA_ECO9 is a categorical variable with the names of the nine "Wadeable Stream Assessment" aggregated ecoregions.  If this variable is selected it will need to be converted to dummy variable for the linear analysis.  A new data.frame call "WSA9dummies" is created for this.
+
+This give us two data.frames:
+
+1.  "Pall" contains the predictor variables (including the categorical variable "WSA_ECO9")
+2. "WSA9dummies" contains the ecoregion dummy variables.  NOTE: to use this with Pall you need to remove Pall$WSA_ECO9.  For example a data.frame with response variables and the WSA dummies is created with the following code:  Pall1<-data.frame(Pall[,-grep("WSA_ECO9",names(Pall))],WSA9dummies)
+
+```{r predictorSelection, echo=FALSE, cache=FALSE} 
+#create the data.frame of predictors
+	#It is easiest to select variables in HKM2014Data that we don't want and then delete them.  
+		omit<-unique(c(grep("NLA_ID",names(hkm2014Data)),  #NLA_ID
+						grep("Comid",names(hkm2014Data)),				 #Comid
+						grep("NA_",names(hkm2014Data)),          #NA tabulations for Landscape variables
+						grep("MaxDist",names(hkm2014Data)),      #MaxDist Buffer Variables
+						grep("1500m",names(hkm2014Data)),        #1500m Buffer Variables
+						grep("Km2",names(hkm2014Data)),					 #Buffer Variables tabulated as area
+						grep("DDs",names(hkm2014Data))[-2],      #Degree Days variables-keep DDs45
+						grep("Tm",names(hkm2014Data))[-3],       #Water Temp variables-keep TmeanW
+						grep("SECMEAN",names(hkm2014Data)),  		 #SECMEAN dropped-using TURB instead
+						grep("CHLA",names(hkm2014Data)),         #CHLA dropped; it is the response variable
+						grep("bvCat",names(hkm2014Data)),        #bvCat: biovolume category
+						grep("TS_",names(hkm2014Data))))         #Trophic State Classification Variables
+
+		#create df by omitting the unwanted variables	
+			Pall<-hkm2014Data[,-omit]  
+
+		#Add a variable for NP ratio
+			Pall$NPratio<-Pall$NTL/Pall$PTL
+
+#create df WSA9dummies	
+	WSA9<-data.frame(WSA_ECO9=Pall$WSA_ECO9)
+		a<-as.character(unique(WSA9$WSA_ECO9)) #vector of WSA_ECO9 names
+  		for(i in a){
+    		b<-paste('WSA9_',i,sep='')   #create variable name
+    		WSA9[,b]<-factor(0, levels = 0:1, labels = c("no", "yes"))  #create the factor
+    		WSA9[Pall$WSA_ECO9==i,b]<-'yes'  # populate the factor
+    }		
+	WSA9dummies<-WSA9[,-1]	
+```
+
+### Initital GIS Predictor variable selection 
+The Predictor variables in Pall contains a mixture of variables that can be assessed with GIS and  measured water quality variables.  To see if the GIS variables alone can be used we create a new data.frame with just the GIS predictors.
+
+1.  This creates one df named "Pgis" that includes the location, lake morphmetrics, growing degreee days (DDs45), and the NLCD percents in buffers of 300m and 3000m.
+2.  You can subset this to use buffers of 300m only with this code: Pgis300<-Pgis[,-grep("3000m",names(Pgis))]   
+3.  You can subset this to use buffers of 3000m only with this code: Pgis3k<-Pgis[,-grep("300m",names(Pgis))]
+
+
+```{r GISpredictors, echo=FALSE, cache=FALSE} 
+#create the data.frame of GIS predictors
+	#Select variables from Pall to include  
+			keep<-c(grep("_300",names(Pall),value=TRUE),"AlbersX","AlbersY","LakeArea","LakePerim","ShoreDevel",
+							"BASINAREA","DEPTHMAX","ELEV_PT","DDs45","MaxLength","MaxWidth","MeanWidth",          
+              "FetchN","FetchNE","FetchE","FetchSE","MaxDepthCorrect","VolumeCorrect","MeanDepthCorrect",
+							grep("WSA",names(Pall),value=TRUE))
+		#create df of all GIS variables
+			Pgis<-Pall[,keep]
+```
+
+### response variable selection 
+For the Random Forest analysis we create the  categorical response variable "chlaCat".  This variable has three categories:
+
+1. Low=lakes with Chla concentrations in the first quartile of the Chla distribution
+2. Med=lakes with Chla concentrations in the second and third quartiles of the Chla distribution
+3. High=lakes with Chla concentrations in the fourth quartile of the Chla distribution
+```{r responseSelection, echo=FALSE, cache=FALSE} 
+	#Create a Chla Category with Low=first Quartile (Q1); Med=Q2 & Q3; High=Q4
+		chlaCat<-factor(rep('MED',nrow(hkm2014Data)),ordered=T,levels=c("LOW","MED","HIGH"))
+    chlaCat[hkm2014Data$CHLA<=quantile(hkm2014Data$CHLA,.25,na.rm=T)]<-'LOW'
+    chlaCat[hkm2014Data$CHLA>=quantile(hkm2014Data$CHLA,.75,na.rm=T)]<-'HIGH'
+    chlaCat[is.na(hkm2014Data$CHLA)]<-NA
+			table(chlaCat,useNA='ifany')	
+```
+
+```{r run_varSelRF, echo=FALSE, cache=TRUE} 
+#run for all predictors
+	#intial conditions:
+		NTREE<-10000 #(10000) number of trees for first run
+		Niterations<-5000 #(5000) number of trees for subsequent runs
+		dropFrac<-0.2 #(0.2) proportion of variable to drop after each iteration
+	#select complete cases
+		keep<-complete.cases(Pall,hkm2014Data$TS_CHLA)
+<<<<<<< HEAD
+	#run rf.s
+		print("RF of all variables with both 300m and 3000m  percent nlcd")
+			varSelAll<-varSelRF(Pall[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, 
+												ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+				varSelAll  #Selected variables: c('NPratio,'NTL','PTL','TOC','TURB','K',WSA_ECO9)
+				summary(varSelAll$selec.history)
+				#plot(varSelAll, which=2)
+
+		print("RF of all variables with only the 300m percent nlcd")
+			varSelAll300<-varSelRF(Pall300[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, 
+												ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+				varSelAll300  #Selected variables: c(')
+				summary(varSelAll300$selec.history)
+		
+		print("RF of all variables with only the 3000m percent nlcd")
+			varSelAll3k<-varSelRF(Pall3k[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE,
+												ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+				varSelAll3k  #Selected variables: c(')
+				summary(varSelAll3k$selec.history)
+=======
+	#run rf
+		varSelAll<-varSelRF(Pall[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = 10000, 
+												 ntreeIterat = 5000, vars.drop.frac = 0.2)
+	#view results
+		varSelAll     #Selected variables: c('NPratio,'NTL','PTL','TOC','TURB','K',WSA_ECO9)
+		summary(varSelAll$selec.history)
+		plot(varSelAll, which=2)
+>>>>>>> 59a3329acd4b2d42233c4b46104828a02f7de5f4
+
+#run for all GIS predictors
+	#select complete cases
+		keep<-complete.cases(Pgis,hkm2014Data$TS_CHLA)
+	#run rf
+		print("RF of GIS variables with both 300m and 3000m  percent nlcd")
+			varSelGIS<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, 
+												 ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+				varSelGIS  #Selected variables: c("AlbersX","AlbersY","CropsPer_3000m","DEPTHMAX",
+                                    #  "EvergreenPer_3000m","EvergreenPer_300m","WSA_ECO9")
+				summary(varSelGIS$selec.history)
+		
+		print("RF of GIS variables with only 300m percent nlcd")
+			varSelGIS300<-varSelRF(Pgis300[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, 
+												 ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+				varSelGIS300  #Selected variables: c("AlbersX","AlbersY","BASINAREA","CropsPer_300m","DDs45","DeciduousPer_300m","DEPTHMAX","ELEV_PT","EvergreenPer_300m","HerbWetPer_300m", "LakeArea","LakePerim","MaxDepthCorrect","MaxLength","MeanDepthCorrect","PasturePer_300m","VolumeCorrect","WoodyWetPer_300m","WSA_ECO9")    
+				summary(varSelGIS300$selec.history)
+
+		print("RF of GIS variables with only 3000m percent nlcd")
+			varSelGIS3k<-varSelRF(Pgis3k[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, 
+												 ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+			#view results
+			varSelGIS3k  #Selected variables: c("AlbersX","AlbersY","BASINAREA","CropsPer_3000m","DDs45","DeciduousPer_3000m","DEPTHMAX","DevOpenPer_3000m","ELEV_PT","EvergreenPer_3000m","HerbWetPer_3000m","MaxDepthCorrect","MeanDepthCorrect","ShrubPer_3000m","WSA_ECO9" )
+			summary(varSelGIS3k$selec.history)
+```
+
+
