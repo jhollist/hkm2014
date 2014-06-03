@@ -67,8 +67,8 @@ The Predictor variables in Pall contains a mixture of variables that can be asse
 ```{r GISpredictors, echo=FALSE, cache=FALSE} 
 #create the data.frame of GIS predictors
 	#Select variables from Pall to include  
-			keep<-c(grep("_300",names(Pall),value=TRUE),"AlbersX","AlbersY","LakeArea","LakePerim","ShoreDevel",
-							"BASINAREA","DEPTHMAX","ELEV_PT","DDs45","MaxLength","MaxWidth","MeanWidth",          
+			keep<-c(grep("_3000m",names(Pall),value=TRUE),"AlbersX","AlbersY","LakeArea","LakePerim","ShoreDevel",
+							"BASINAREA","ELEV_PT","DDs45","MaxLength","MaxWidth","MeanWidth",          
               "FetchN","FetchNE","FetchE","FetchSE","MaxDepthCorrect","VolumeCorrect","MeanDepthCorrect",
 							grep("WSA",names(Pall),value=TRUE))
 		#create df of all GIS variables
@@ -90,8 +90,8 @@ For the Random Forest analysis we need a response variable.  For now just just t
 ```{r run_varSelRF, echo=FALSE, cache=TRUE} 
 #run for all GIS predictors
 	#intial conditions:
-		NTREE<-1000 #(10000) number of trees for first run
-		Niterations<-500 #(5000) number of trees for subsequent runs
+		NTREE<-10000 #(10000) number of trees for first run
+		Niterations<-5000 #(5000) number of trees for subsequent runs
 		dropNum<-1 # number of variables to drop after each iteration
 		numRun<-100 #number of times to repeat the rf
 	
@@ -105,6 +105,15 @@ For the Random Forest analysis we need a response variable.  For now just just t
 												vars.drop.frac=NULL,vars.drop.num=dropNum)
 		Out[[i]]<-rfGIS$selected.vars
 		}
+	
+	#summarize variables
+	summDF<-data.frame()
+	uniqueVar<-unique(unlist(Out))
+  for(i in uniqueVar){
+  	summDF<-rbind(summDF,data.frame(Variable=i,Percent=sum(unlist(Out)%in%i)/numRun))
+  }
+	summDF<-summDF[order(summDF$Percent,decreasing=T),]
+  summDF
 
 ```
 
