@@ -29,10 +29,9 @@ We start by selecting the predictor variables. *A priori* we made the following 
 
 6.  If the WSA_ECO9 is a categorical variable with the names of the nine "Wadeable Stream Assessment" aggregated ecoregions.  If this variable is selected it will need to be converted to dummy variable for the linear analysis.  A new data.frame call "WSA9dummies" is created for this.
 
-This give us two data.frames:
+This give us one data.frame:
 
 1.  "Pall" contains the predictor variables (including the categorical variable "WSA_ECO9")
-2. "WSA9dummies" contains the ecoregion dummy variables.  NOTE: to use this with Pall you need to remove Pall$WSA_ECO9.  For example a data.frame with response variables and the WSA dummies is created with the following code:  Pall1<-data.frame(Pall[,-grep("WSA_ECO9",names(Pall))],WSA9dummies)
 
 ```{r predictorSelection, echo=FALSE, cache=FALSE} 
 #create the data.frame of predictors
@@ -55,16 +54,6 @@ This give us two data.frames:
 
 		#Add a variable for NP ratio
 			Pall$NPratio<-Pall$NTL/Pall$PTL
-
-#create df WSA9dummies	
-	WSA9<-data.frame(WSA_ECO9=Pall$WSA_ECO9)
-		a<-as.character(unique(WSA9$WSA_ECO9)) #vector of WSA_ECO9 names
-  		for(i in a){
-    		b<-paste('WSA9_',i,sep='')   #create variable name
-    		WSA9[,b]<-factor(0, levels = 0:1, labels = c("no", "yes"))  #create the factor
-    		WSA9[Pall$WSA_ECO9==i,b]<-'yes'  # populate the factor
-    }		
-	WSA9dummies<-WSA9[,-1]	
 ```
 
 ### Initital GIS Predictor variable selection 
@@ -87,15 +76,15 @@ The Predictor variables in Pall contains a mixture of variables that can be asse
 ```
 
 ### response variable selection 
-For the Random Forest analysis we need a response variable.  For now just just the TS_CHLA.  
+For the Random Forest analysis we need a response variable.  For now just just the TS_CHLA. (5 missing values) 
 
 
 ```{r responseSelection, echo=FALSE, cache=FALSE} 
 	TS_CHLA<-hkm2014Data$TS_CHLA
-	table(TS_CHLA)
+	table(TS_CHLA,useNA='ifany') #note there are five missing values
 ```
 
-### Analysis:  Run varSelRF multiple time to see if the same variables are selected each time.
+### Analysis1:  Run varSelRF multiple time to see if the same variables are selected each time.
 
 
 ```{r run_varSelRF, echo=FALSE, cache=TRUE} 
@@ -103,21 +92,46 @@ For the Random Forest analysis we need a response variable.  For now just just t
 	#intial conditions:
 		NTREE<-1000 #(10000) number of trees for first run
 		Niterations<-500 #(5000) number of trees for subsequent runs
-		dropFrac<-0.1 #(0.2) proportion of variable to drop after each iteration
+		dropNum<-1 # number of variables to drop after each iteration
+		numRun<-10 #number of times to repeat the rf
 	
 	#select complete cases
 		keep<-complete.cases(Pgis,TS_CHLA)
+
 	#run rf
-		GIS_1<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
-		GIS_2<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
-		GIS_3<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
-		GIS_4<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
-		GIS_5<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
-		GIS_6<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
-		GIS_7<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
-		GIS_8<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
-		GIS_9<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
-		GIS_10<-varSelRF(Pgis[keep,],hkm2014Data[keep,'TS_CHLA'],ntree = NTREE, ntreeIterat = Niterations, vars.drop.frac = dropFrac)
+		Out<-data.frame(Model=rep('xxx',numRun))
+			for(i in c(1:numRun)){
+				rfGIS<-varSelRF(Pgis[keep,],TS_CHLA[keep],ntree=NTREE,ntreeIterat=Niterations,
+												vars.drop.frac=NULL,vars.drop.num=dropNum)
+		Out[i,]<-rfGIS$selected.model
+		}
+
+```
+
+### Analysis2:  Alternatively we could use varSelRFBoot to bootstrap the analysis
+
+
+```{r run_varSelRFBoot, echo=FALSE, cache=TRUE} 
+#run for all GIS predictors
+	#intial conditions:
+		NTREE<-100 #(1000) number of trees for first run
+		Niterations<-50 #(500) number of trees for subsequent runs
+		dropNum<-2 # number of variables to drop after each iteration
+		numBoot<-2 #number of times to bootrstrap the rf
+	
+	#select complete cases
+		#keep<-complete.cases(Pgis,TS_CHLA)
+		keep<-c(1:100)
+	
+	#run rfBoot
+		rfGIS<-varSelRF(Pgis[keep,],TS_CHLA[keep],ntree=NTREE,ntreeIterat=Niterations,
+												vars.drop.frac=NULL,vars.drop.num=dropNum)  #first run sets initial conditions
+		bootGIS<-varSelRFBoot(Pgis[keep,],TS_CHLA[keep],vars.drop.num=dropNum,
+											 bootnumber=numBoot,usingCluster = FALSE,srf=rfGIS)
+
+		bootGIS
+		summary(bootGIS)
+		plot(bootGIS)
 ```
 
 
