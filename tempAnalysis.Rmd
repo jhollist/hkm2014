@@ -92,18 +92,18 @@ For the Random Forest analysis we need a response variable.  For now just just t
 	#intial conditions:
 		NTREE<-1000 #(10000) number of trees for first run
 		Niterations<-500 #(5000) number of trees for subsequent runs
-		dropNum<-4 # number of variables to drop after each iteration
-		numRun<-1 #number of times to repeat the rf
+		dropNum<-1 # number of variables to drop after each iteration
+		numRun<-100 #number of times to repeat the rf
 	
 	#select complete cases
 		keep<-complete.cases(Pgis,TS_CHLA)
 
 	#run rf
-		Out<-data.frame(Model=rep('xxx',numRun))
+		Out<-vector("list",numRun)
 			for(i in c(1:numRun)){
 				rfGIS<-varSelRF(Pgis[keep,],TS_CHLA[keep],ntree=NTREE,ntreeIterat=Niterations,
 												vars.drop.frac=NULL,vars.drop.num=dropNum)
-		Out[i,]<-rfGIS$selected.model
+		Out[[i]]<-rfGIS$selected.vars
 		}
 
 ```
