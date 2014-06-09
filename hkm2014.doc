@@ -39,84 +39,70 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
 // -->
 </script><noscript>&#x6d;&#x69;&#108;&#x73;&#116;&#x65;&#x61;&#100;&#46;&#98;&#114;&#x79;&#x61;&#110;&#32;&#x61;&#116;&#32;&#x65;&#112;&#x61;&#32;&#100;&#x6f;&#116;&#32;&#x67;&#x6f;&#118;</noscript>), US EPA, Office of Research and Development, National Health and Environmental Effects Research Lab, Atlantic Ecology Division, Narragansett, RI, 02882</em></p>
 <h2 id="abstract">Abstract</h2>
-<p>Productivity of lentic ecosystems has been well studied and predicting the algal community response is known to be largely a function of nitrogen and phosphorus. Most existing predictive models take advantage of this well studied relationship to predict chlorphyl a and lake trophic state. While this provides reliable predictions, it requires <em>in situ</em> water quality data in order to paramterize the model. This limits the application of these models to lakes with existing and, more importanly, available water quality data. To expand our ability to predict in lakes without water quality data, we take advantage of the availability of a large national lakes water quality database, land use/land cover data, lake morphometry data, other universally available data, and modern data mining approaches to build and assess alternative models of lake tropic state that may be more universally applied. We use random forests and random forest variable selection to identify variables to be used for predicting trophic status and we compare the classification accuracy of a variety of existing and novel models. Adding in additional variables to the classic models of Chlorophyl <em>a</em> based trophic state improves predictions only by a small percentage. Models based on nutrients alone predict trophic state with and average of XX% accuracy. Models build with universally available data alone are able to correctluy predict trophic state, on average, xx% of the time.</p>
+<p>Productivity of lentic ecosystems has been well studied and predicting the algal community response is known to be largely a function of nitrogen and phosphorus. Most existing predictive models take advantage of this well studied relationship to predict chlorphyl a and lake trophic state. While this provides reliable predictions, it requires <em>in situ</em> water quality data in order to paramterize the model. This limits the application of these models to lakes with existing and, more importanly, available water quality data. To expand our ability to predict in lakes without water quality data, we take advantage of the availability of a large national lakes water quality database, land use/land cover data, lake morphometry data, other universally available data, and modern data mining approaches to build and assess alternative models of lake tropic state that may be more universally applied. We use random forests and random forest variable selection to identify variables to be used for predicting trophic status and we compare the classification accuracy of a variety of existing and novel models. Models based on nutrients alone predict trophic state with and average of XX% accuracy. Models build with universally available data alone are able to correctluy predict trophic state, on average, xx% of the time. Adding in additional variables to the classic models of Chlorophyl <em>a</em> based trophic state improves predictions only by a small percentage. These results suggest that when <em>in situ</em> data are availble, additional variables do not appreciable improve predictions of trophic state. Additionally, reliable predictions of trophic state are possible without <em>in situ</em> data allowing for a much broader application of trophic state models than has been previously applied.</p>
 <h4 id="keywords-national-lakes-assessment-cyanobacteria-chlorophyl-a-national-land-cover-dataset-random-forest-data-mining">Keywords: National Lakes Assessment, Cyanobacteria, Chlorophyl a, National Land Cover Dataset, Random Forest, Data Mining</h4>
 <h2 id="introduction">Introduction</h2>
-<p>Productivity in lentic systems is often categorized across a range of tropic states (e.g. the tropic continuum) from early succesional (i.e. oligotrophic)to late successional lakes (i.e. hypereutrophic) <span class="citation">(Carlson 1977)</span>. Lakes naturally occur across the range of trophic state and higher primary productivity is not necessarily a predictor of poor ecological condition. Lakes that are naturally oligotrophic occur in nutrient poor areas or have a more recent geologic history. These lakes are often found in higher elevations, have clear water, and are often favored for drinking water or direct contact recreation (e.g. swimming). Lakes with higher productivity (e.g. eutrophic lakes) have greater nutrient loads, tend to be less clear, have greater density of aquatic plants, and often support more diverse and abundant fish communities. Lakes will naturally shift to higher trophic states but this is a slow process. Given this fact, monitoring trophic state allows the identification of rapid shifts in trophic state or locating lakes with unusually high productivity (e.g. hypereutrophic). These cases are indicative of lakes under greater anthropogenic nutrient loads, also known as cultural eutrophication, and are more likely to be at risk of fish kills, fouling, and harmful algal blooms<span class="citation">(Smith 1998, Smith et al. 1999, 2006)</span>.</p>
-<p>Given the association between trophic state and many ecosystem services and disservices, being able to model trophic state could allow for estimating trophic state in unmonitored lakes and provide a first cut at identifying lakes with the potential for harmful algal blooms and other problems associated with cultural eutrophication. Most prior models related to trophic state are either limited in spatial extent, have data from a small number of lakes, model nutrients or chlorophyll a directly, use measures of trophic state not widely used or focus on in-lake information (i.e. nurients) and not on the landscape-level data.</p>
-<p>For instance, Imboden and Gächter <span class="citation">(1978)</span> built a model of primary prodcuction per unit area with a suite of in lake variables and tested this on only three lakes. Another study by Salas and Martino [-salas1991simplified] focused only on warm water lakes and used a dataset of 27 lakes to build their models. They included loading coefficients of Phosphorus from the surrounding landscapes in addition to lake morphometry nutrient and cholorphyll <em>a</em> concentration, and disssolved oxygen. They also focus on the scientific and managerial importance of trophic state. However, the study suffers from data were collected by independent labs with variation in the methods and their focus is on warm-water lakes.</p>
-<p>Lastly, ... xxx found...</p>
-<p>Building on these past efforts, we take advanatage of one the first complete national scale efforts monitoring lakes to try and discern broad patterns in both in-lake parameters that drive trophic state and landscape level parameters that might also drive trophic state</p>
-<!-- gear shift to testing against classic models and what data mining brings to the table -->
-
+<p>Productivity in lentic systems is often categorized across a range of tropic states (e.g. the tropic continuum) from early succesional (i.e. oligotrophic)to late successional lakes (i.e. hypereutrophic) <span class="citation">(Carlson 1977)</span>. Lakes naturally occur across the range of trophic state and higher primary productivity is not necessarily a predictor of poor ecological condition. Lakes that are naturally oligotrophic occur in nutrient poor areas or have a more recent geologic history. These lakes are often found in higher elevations, have clear water, and are often favored for drinking water or direct contact recreation (e.g. swimming). Lakes with higher productivity (e.g. eutrophic lakes) have greater nutrient loads, tend to be less clear, have greater density of aquatic plants, and often support more diverse and abundant fish communities. Lakes will naturally shift to higher trophic states but this is a slow process. Given this fact, monitoring trophic state allows the identification of rapid shifts in trophic state or locating lakes with unusually high productivity (e.g. hypereutrophic). These cases are indicative of lakes under greater anthropogenic nutrient loads, also known as cultural eutrophication, and are more likely to be at risk of fish kills, fouling, and harmful algal blooms<span class="citation">(Smith 1998, Smith et al. 1999, 2006)</span>. Given the association between trophic state and many ecosystem services and disservices, being able to model trophic state could allow for estimating trophic state in unmonitored lakes and provide a first cut at identifying lakes with the potential for harmful algal blooms and other problems associated with cultural eutrophication.</p>
 <p>Classic models for estimating chlorophyl <em>a</em>, and thus trophic state, are linear (or log-linear), and rely solely on nitrogen and phosphorus concentrations. These well established models were initially developed in ...</p>
-<ul>
-<li>Our primary question is, at the national scale, what are the primary determinants of lake trophic status?</li>
-<li>Can those determinants be used to predict trophic state with an acceptable level of accuracy?</li>
-</ul>
-<p>Determinants include, chemical and physical parameters of the lake water column and land use/land cover. Lake trophic status defined by Chl a.</p>
+<p>Building on these past efforts, we take advanatage of one the first complete national scale efforts monitoring lakes and widely availble spatial datasets (e.g. land use/land cover, lake morphometry, etc.) to try and discern broad patterns in both in-lake parameters that drive trophic state and landscape level parameters that might also drive trophic state Our primary questions are: XXXXXXX</p>
 <h2 id="methods">Methods</h2>
 <h3 id="data-and-study-area">Data and Study Area</h3>
 <p>The two primary sources of data for this study are the National Lakes Assessment (NLA) data and the National Land Cover Dataset (NLCD) <span class="citation">(USEPA 2009)</span>. Both datasets are national in scale and provide a unique snapshot view of the condition of United States' lakes and the patterns of the lakes surrounding landscape.</p>
 <p>The NLA data were collected during the summer of 2007 and the final data were released in 2009. With consistent methods and metrics collected at 1056 locations across the conterminous United States, the NLA provides a unique opportunity to examine continental scale patterns in lake productivity. The NLA collected data on biophysical meausres of lake water quality and habitat. For this analysis we primarily examined the water quality measurements from the NLA [TABLE REF].</p>
-<p>Adding to the monitoring data collected via the NLA, we use the 2006 NLCD data to examine the possible landscape-level drivers of trophic status in lakes. The NLCD is a nationally collected land use land cover dataset that also provides estimates of impervious surface. We collected total land use land cover and total percent impervious surface within the surroundin landscape of the lake [TABLE REF]. We defined the surrounding landscape of a lake with three different buffer distances: 300 meters, 1500 meters, and 2500 meters. The various distances were used to tease out differences in local landscape effects versus larger landscape-level effects.</p>
+<p>Adding to the monitoring data collected via the NLA, we use the 2006 NLCD data to examine the possible landscape-level drivers of trophic status in lakes. The NLCD is a nationally collected land use land cover dataset that also provides estimates of impervious surface. We collected total land use land cover and total percent impervious surface within the surroundin landscape of the lake [TABLE REF]. We defined the surrounding landscape of a lake with three different buffer distances: 300 meters, 1500 meters, and 2500 meters. The various distances were used to tease out differences in local landscape effects versus larger landscape-level effects. Lastly, lake morphometry is often linked to the productivity of a lake (NEED REF). To account for this, we included a recently released dataset on lake morphometry (Hollister PUBLISH THIS YOU MOFO).</p>
 <h3 id="defining-trophic-state">Defining Trophic State</h3>
-<p>The dependent variable for this effort is lake trophic state. Trophic state is usually defined over four levels: oligotrphic, mesotrophic, eutorphic, and hypereutrophic. Commonly, cut-off values for each of these four levels may be specified with nitrogen concnetration, phosphorus concentration, secchi depth, or chlorphyll a concentration <span class="citation">(Carlson 1977, USEPA 2009)</span>. As this study is based largely from the NLA we use the NLA definition of trophic state based on the chlorophyll a concentrations (Table).</p>
+<p>The dependent variable for this effort is lake trophic state. Trophic state is usually defined over four levels: oligotrphic, mesotrophic, eutorphic, and hypereutrophic. Commonly, cut-off values for each of these four levels may be specified with nitrogen concnetration, phosphorus concentration, secchi depth, or chlorphyll a concentration <span class="citation">(Carlson 1977, USEPA 2009)</span>. As this study is based largely from the NLA we use the NLA definition of trophic state based on the chlorophyll a concentrations (Table). Additionally, a common need for managment is to identify lakes that are in the greatest need of managment. Most of the mangement needs (e.g. cyanobacteria, low disolved oxygen, general HABs, etc.) are associated with the most eutrophic conditions. As such, we also build models for two classes, hypereutrophic and non-hyperutrophic.</p>
 <table>
 <thead>
 <tr class="header">
 <th align="left">Trophic State</th>
+<th align="left">Hypereutrophic Classes</th>
 <th align="left">Cut-off</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
 <td align="left">oligotrophic</td>
+<td align="left">Non-Hypereutrophic</td>
 <td align="left">&lt;= 0.2</td>
 </tr>
 <tr class="even">
 <td align="left">mesotrophic</td>
+<td align="left">Non-Hypereutrophic</td>
 <td align="left">&gt;2-7</td>
 </tr>
 <tr class="odd">
 <td align="left">eutrophic</td>
+<td align="left">Non-Hypereutrophic</td>
 <td align="left">&gt;7-30</td>
 </tr>
 <tr class="even">
 <td align="left">hypereutrophic</td>
+<td align="left">Hypereutrophic</td>
 <td align="left">&gt;30</td>
 </tr>
 </tbody>
 </table>
-<h3 id="variable-selection">Variable Selection</h3>
-<p>A strength of random forest is its ability to handle numerous correlated variables without a decrease in prediction accuracy. Yet the number of redundant correlated predictor variables in our data requires a cursory reduction through the described variable selection method. To do this we examine the correlation between log transformed chlorophyll a concentration and each of the log transformed variables. The rationale behind this selection method is to discard variables with little to no association with chlorphyll a and thus trophic state. Variables that explained less than 5% of the variance (i.e. a pairwise correlation of less than 0.22) were assumed to not be associated with cholorophyll a concentration and were removed from further consideration. Additionally, variables measuring different attributes of the same distribution (e.g. minimum, maximum or mean temperature) were selected based on the variable with the strongest corelation with chlorophyll a. Lastly, the remaining predictor variables that are highly correlated with one another should not be included in the initial set of variables passed to the random forest, unless sepcified by domain knowledge. As such we examine the pairwise correlations of these remaining variables and make a determination, as determined by knowledge of the system, as to which variables to retain.</p>
-<h3 id="random-forest">Random Forest</h3>
-<p>As stated above, our goal is to explore relative variable importance in determination of lake trophic status. We selected random forest as our statistical analysis approach, becasuse, among other reasons, random forest provides a robust measure of variable importance. Random forest is a machine learning algorithm that aggregates numerous decision trees in order to obtain a consensus prediction of the response categories. Bootstrapped sample data is recursively partitioned according to a given random subset of predictor variables and completely grown without pruning. With each new tree, both the sample data and predictor variable subset is randomly selected.</p>
-<p>This randomization provides an intrinsic means to calculate out-of-bag (OOB) error and variables importance.</p>
-<p>All random forest analysis was conducted using R’s randomForest package; for more details see <span class="citation">Breiman (2001)</span>.</p>
-<p><em>Variable Importance</em></p>
-<ul>
-<li>How to use for variable selection</li>
-<li>what we used to identify important variables</li>
-</ul>
-<p><em>Predicted Trophic State</em></p>
-<ul>
-<li>How random forests makes final predictions,</li>
-<li>what we used to assess accuracy, etc.</li>
-</ul>
+<h3 id="predicting-trophic-state-from-classic-linear-models">Predicting Trophic State from Classic Linear Models</h3>
+<p>Classic Linear Models of Chl <em>a</em>: 1. Chl <em>a</em> ~ TN 2. Chl <em>a</em> ~ TP 3. Chl <em>a</em> ~ TN + TP</p>
+<p>We use these to predict Chl <em>a</em>, then convert observed and predicted Chl <em>a</em> to trophic state (Table 1). We calcualte a confusion matrix and summary stats of the matrix for each of the classic models.</p>
+<h3 id="predicting-trophic-state-with-random-forests">Predicting Trophic State with Random Forests</h3>
+<p>Random forest is a machine learning algorithm that aggregates numerous decision trees in order to obtain a consensus prediction of the response categories <span class="citation">(Breiman 2001)</span>. Bootstrapped sample data is recursively partitioned according to a given random subset of predictor variables and completely grown without pruning. With each new tree, both the sample data and predictor variable subset is randomly selected.</p>
+<p>While random forests are able to handle numerous correlated variables without a decrease in prediction accuracy, unusually large numbers of related variables can reduce accuracy and increase the chances of over-fitting the model. This is a problem often faced in genetics. In that field, a variable selection method based on random forest has been succesfully applied (NEED REF). We use varselRF in R to initially examine the importance of the variables and select a subset, the reduced model, to then pass to random forest. Details on how we conducted the analyses are availble in the R package associated with the manuscript <code>hkm</code> availble via Github (citation for Github Repo)</p>
+<p>Using R’s randomForest package, we pass the reduced models selected with varSelRF and calculate confusion matrices, overall accuracy and kappa coeffecient <span class="citation">(Liaw and Wiener 2002)</span>.</p>
 <h2 id="results">Results</h2>
 <h3 id="summary-statistics">Summary Statistics</h3>
 <ul>
 <li>Narrative summary.</li>
 <li>Table</li>
 </ul>
-<h3 id="variable-selection-1">Variable Selection</h3>
+<h3 id="variable-selection">Variable Selection</h3>
 <ul>
 <li>Which variables were selected to include, and why, in the Random Forest.<br /></li>
 <li><p>Table.</p></li>
 <li><p>Pairs plot of selected variables showing little/weak association between selected variables.</p></li>
 </ul>
-<h3 id="random-forest-1">Random Forest</h3>
+<h3 id="random-forest">Random Forest</h3>
 <ul>
 <li>Summary of Random Forest model (number of Params, total oob, etc.)</li>
 </ul>
@@ -145,7 +131,7 @@ document.write('<a h'+'ref'+'="ma'+'ilto'+':'+e+'">'+e+'<\/'+'a'+'>');
 <h2>References</h2>
 <p>Breiman, L. 2001. Random forests. Machine learning 45:5–32.</p>
 <p>Carlson, R. E. 1977. A trophic state index for lakes. Limnology and oceanography 22:361–369.</p>
-<p>Imboden, D., and R. Gächter. 1978. A dynamic lake model for trophic state prediction. Ecological modelling 4:77–98.</p>
+<p>Liaw, A., and M. Wiener. 2002. Classification and regression by randomForest. R News 2:18–22.</p>
 <p>Smith, V. H. 1998. Cultural eutrophication of inland, estuarine, and coastal waters. Pages 7–49 <em>in</em> Successes, limitations, and frontiers in ecosystem science. Springer.</p>
 <p>Smith, V. H., S. B. Joye, R. W. Howarth, and others. 2006. Eutrophication of freshwater and marine ecosystems. Limnology and Oceanography 51:351–355.</p>
 <p>Smith, V. H., G. D. Tilman, and J. C. Nekola. 1999. Eutrophication: impacts of excess nutrient inputs on freshwater, marine, and terrestrial ecosystems. Environmental pollution 100:179–196.</p>

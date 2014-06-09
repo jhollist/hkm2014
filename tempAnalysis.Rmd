@@ -67,8 +67,8 @@ The Predictor variables in Pall contains a mixture of variables that can be asse
 ```{r GISpredictors, echo=FALSE, cache=FALSE} 
 #create the data.frame of GIS predictors
 	#Select variables from Pall to include  
-			keep<-c(grep("_300",names(Pall),value=TRUE),"AlbersX","AlbersY","LakeArea","LakePerim","ShoreDevel",
-							"BASINAREA","DEPTHMAX","ELEV_PT","DDs45","MaxLength","MaxWidth","MeanWidth",          
+			keep<-c(grep("_3000m",names(Pall),value=TRUE),"AlbersX","AlbersY","LakeArea","LakePerim","ShoreDevel",
+							"BASINAREA","ELEV_PT","DDs45","MaxLength","MaxWidth","MeanWidth",          
               "FetchN","FetchNE","FetchE","FetchSE","MaxDepthCorrect","VolumeCorrect","MeanDepthCorrect",
 							grep("WSA",names(Pall),value=TRUE))
 		#create df of all GIS variables
@@ -84,14 +84,14 @@ For the Random Forest analysis we need a response variable.  For now just just t
 	table(TS_CHLA,useNA='ifany') #note there are five missing values
 ```
 
-### Analysis1:  Run varSelRF multiple time to see if the same variables are selected each time.
+### Analysis1: GIS VARIABLES: Run varSelRF multiple time to see if the same variables are selected each time.
 
 
 ```{r run_varSelRF, echo=FALSE, cache=TRUE} 
 #run for all GIS predictors
 	#intial conditions:
-		NTREE<-1000 #(10000) number of trees for first run
-		Niterations<-500 #(5000) number of trees for subsequent runs
+		NTREE<-10000 #(10000) number of trees for first run
+		Niterations<-5000 #(5000) number of trees for subsequent runs
 		dropNum<-1 # number of variables to drop after each iteration
 		numRun<-100 #number of times to repeat the rf
 	
@@ -99,12 +99,64 @@ For the Random Forest analysis we need a response variable.  For now just just t
 		keep<-complete.cases(Pgis,TS_CHLA)
 
 	#run rf
-		Out<-data.frame(Model=rep('xxx',numRun))
+		Out<-vector("list",numRun)
 			for(i in c(1:numRun)){
 				rfGIS<-varSelRF(Pgis[keep,],TS_CHLA[keep],ntree=NTREE,ntreeIterat=Niterations,
 												vars.drop.frac=NULL,vars.drop.num=dropNum)
-		Out[i,]<-rfGIS$selected.model
+		Out[[i]]<-rfGIS$selected.vars
+		save(list=c("i","Out"),file="Pgis.rda")
+		print(i)
 		}
+	
+	#summarize variables
+	summDF<-data.frame()
+	uniqueVar<-unique(unlist(Out))
+  for(i in uniqueVar){
+  	summDF<-rbind(summDF,data.frame(Variable=i,Percent=sum(unlist(Out)%in%i)/numRun))
+  }
+	summDF<-summDF[order(summDF$Percent,decreasing=T),]
+  summDF
+  require(knitr)
+  write(kable(summDF),"gis_variable_summary.md")
+  lapply(Out,write,"gis_selected_variables.csv",append=T,ncolumns=1000)
+
+```
+
+### Analysis2: ALL VARIABLES (GIS+WQ): Run varSelRF multiple time to see if the same variables are selected each time.
+
+
+```{r run_varSelRF, echo=FALSE, cache=TRUE} 
+#run for all predictors (GIS + WQ)
+	#intial conditions:
+		NTREE<-10000 #(10000) number of trees for first run
+		Niterations<-5000 #(5000) number of trees for subsequent runs
+		dropNum<-1 # number of variables to drop after each iteration
+		numRun<-100 #number of times to repeat the rf
+	
+	#select complete cases
+		keep<-complete.cases(Pall,TS_CHLA)
+
+	#run rf
+		Out<-vector("list",numRun)
+			for(i in c(1:numRun)){
+				rfALL<-varSelRF(Pall[keep,],TS_CHLA[keep],ntree=NTREE,ntreeIterat=Niterations,
+												vars.drop.frac=NULL,vars.drop.num=dropNum)
+		Out[[i]]<-rfALL$selected.vars
+		save(list=c("i","Out"),file="Pall.rda")
+		print(i)
+		}
+	
+	#summarize variables
+	summDF<-data.frame()
+	uniqueVar<-unique(unlist(Out))
+  for(i in uniqueVar){
+  	summDF<-rbind(summDF,data.frame(Variable=i,Percent=sum(unlist(Out)%in%i)/numRun))
+  }
+	summDF<-summDF[order(summDF$Percent,decreasing=T),]
+  summDF
+  require(knitr)
+  write(kable(summDF),"all_variable_summary.md")
+  lapply(Out,write,"all_selected_variables.csv",append=T,ncolumns=10000)
 
 
 a<-Out[Out[,1]!='xxx',] 
@@ -114,37 +166,37 @@ b$Percent<-b$Freq/length(a)
 
 ```
 
-test<-c("aaa + bbb + ccc")
-strsplit(test,' +')
-
 ### Analysis2:  Alternatively we could use varSelRFBoot to bootstrap the analysis
+=======
+### Analysis3:  Alternatively we could use varSelRFBoot to bootstrap the analysis
 
+#Not working so not currently evaulated.
 
-```{r run_varSelRFBoot, echo=FALSE, cache=TRUE} 
-#run for all GIS predictors
-	#intial conditions:
-		NTREE<-100 #(1000) number of trees for first run
-		Niterations<-50 #(500) number of trees for subsequent runs
-		dropNum<-2 # number of variables to drop after each iteration
-		numBoot<-2 #number of times to bootrstrap the rf
-	
-	#select complete cases
-		#keep<-complete.cases(Pgis,TS_CHLA)
-		keep<-c(701:800)
-
-	
-	#run rfBoot
-		rfGIS<-varSelRF(Pgis[keep,],TS_CHLA[keep],ntree=NTREE,ntreeIterat=Niterations,
-												vars.drop.frac=NULL,vars.drop.num=dropNum)  #first run sets initial conditions
-		bootGIS<-varSelRFBoot(Pgis[keep,],TS_CHLA[keep],vars.drop.num=dropNum,
-											 bootnumber=numBoot,usingCluster = FALSE,srf=rfGIS)
-
-		bootGIS
-		summary(bootGIS)
-		plot(bootGIS)
-```
-
-rf<- varSelRFBoot(Pgis[keep,],TS_CHLA[keep],vars.drop.num = 1,
-											 bootnumber = 2,
-											 usingCluster = FALSE,
-											 srf = rfGIS)
+# ```{r run_varSelRFBoot, echo=FALSE, eval=FALSE, cache=TRUE} 
+# #run for all GIS predictors
+# 	#intial conditions:
+# 		NTREE<-100 #(1000) number of trees for first run
+# 		Niterations<-50 #(500) number of trees for subsequent runs
+# 		dropNum<-2 # number of variables to drop after each iteration
+# 		numBoot<-2 #number of times to bootrstrap the rf
+# 	
+# 	#select complete cases
+# 		#keep<-complete.cases(Pgis,TS_CHLA)
+# 		keep<-c(701:800)
+# 
+# 	
+# 	#run rfBoot
+# 		rfGIS<-varSelRF(Pgis[keep,],TS_CHLA[keep],ntree=NTREE,ntreeIterat=Niterations,
+# 												vars.drop.frac=NULL,vars.drop.num=dropNum)  #first run sets initial conditions
+# 		bootGIS<-varSelRFBoot(Pgis[keep,],TS_CHLA[keep],vars.drop.num=dropNum,
+# 											 bootnumber=numBoot,usingCluster = FALSE,srf=rfGIS)
+# 
+# 		bootGIS
+# 		summary(bootGIS)
+# 		plot(bootGIS)
+# ```
+# 
+# rf<- varSelRFBoot(Pgis[keep,],TS_CHLA[keep],vars.drop.num = 1,
+# 											 bootnumber = 2,
+# 											 usingCluster = FALSE,
+# 											 srf = rfGIS)
