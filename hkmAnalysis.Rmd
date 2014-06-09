@@ -14,12 +14,25 @@ data(hkm2014Data)
 
 ## Main Question: Given that we have a unique combination of novel data, increased computational facilities, and an expanded geographic scope, what can we add to the classic understanding of the processes that are predictive of chlorophyll *a* and trophic state in lakes. 
 
-### Initital variable selection (Jeff)
+### Initital Predictor variable selection (Jeff)
 1.mean temp
 2.DD45 
 3.Select scale(s) - local - 300m and regional - 3000m
  *ANALYSIS*- as a check look at centroid distance matrix 
-4.Turbidity, not secchi - because turb is an instrument measure and not limited by depth of lake.  If need be Turb could be converted to and estimated secchi.
+4.Turbidity, not secchi - because turb is an instrument measure and not limited by depth of lake.  If need be Turb could be converted to an estimated secchi.
+
+We start by selecting the predictor variables. Apriori we made the following decisions:
+
+1.  There are three water temperature measure based on the profile data for the first 2m of the water column, the mean (TmeanW), the min (TminW) and the max (TmaxW).  We decided to use TmeanW arbitrarily.
+
+2.  There are four estimates of growing degree days:  DDs40, DDs45, DDs50, and DDs55.  The number refers to the reference temperature used in the calculation.  It really shouldn't matter for our purposes so we arbitrarily chose DD45.
+
+3. The NLCD landcover was calculated as a percent and as total area in buffers of 300m, 1500m, and 3000m.  A fourth buffer scaled to the maximum inlake distance was also used.  We decided to use the percent landcover in the 300m (homeowner) and the 3000m buffers for the analysis.  *ANALYSIS*- as a check look at centroid distance matrix.
+
+4. Turbidity and Secchi provide similar information and either one can be estimated from the other.  Secchi is not accurate in lakes that are clear to the bottom so we choose to use Turbidity only.
+
+5.  We also decided to add a new variable for the NP ratio.  This is just a straight weight ratio and not the molecular weight ratio.   
+
 
 
 ```{r predictorSelection, echo=FALSE, cache=FALSE} 
@@ -28,14 +41,12 @@ data(hkm2014Data)
 		hkm2014Data$NPratio<-hkm2014Data$NTL/hkm2014Data$PTL
 
 	#Create a Chla Category with Low=first Quartile (Q1); Med=Q2 & Q3; High=Q4
-                chlaCat<-rep('MED',nrow(hkm2014Data))
-                chlaCat[hkm2014Data$CHLA<=quantile(hkm2014Data$CHLA,.25,na.rm=T)]<-'LOW'
-                chlaCat[hkm2014Data$CHLA>=quantile(hkm2014Data$CHLA,.75,na.rm=T)]<-'HIGH'
-                chlaCat[is.na(hkm2014Data$CHLA)]<-NA
-
-	
-		table(chlaCat,useNA='ifany')
-		hkm2014Data$chlaCat<-chlaCat
+		hkm2014Data$chlaCat<-factor('MED',ordered=T,levels=c("LOW","MED","HIGH"))
+    hkm2014Data$chlaCat[hkm2014Data$CHLA<=quantile(hkm2014Data$CHLA,.25,na.rm=T)]<-'LOW'
+    hkm2014Data$chlaCat[hkm2014Data$CHLA>=quantile(hkm2014Data$CHLA,.75,na.rm=T)]<-'HIGH'
+    hkm2014Data$chlaCat[is.na(hkm2014Data$CHLA)]<-NA
+			table(hkm2014Data$chlaCat,useNA='ifany')
+		hkm2014Da$chlaCat<-chlaCat
 		hkm2014Data$chlaCat<-factor(hkm2014Data$chlaCat,ordered=T,levels=c("LOW","MED","HIGH"))
 
 	#select the predictor variable

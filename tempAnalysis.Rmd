@@ -93,7 +93,7 @@ For the Random Forest analysis we need a response variable.  For now just just t
 		NTREE<-1000 #(10000) number of trees for first run
 		Niterations<-500 #(5000) number of trees for subsequent runs
 		dropNum<-1 # number of variables to drop after each iteration
-		numRun<-10 #number of times to repeat the rf
+		numRun<-100 #number of times to repeat the rf
 	
 	#select complete cases
 		keep<-complete.cases(Pgis,TS_CHLA)
@@ -106,7 +106,16 @@ For the Random Forest analysis we need a response variable.  For now just just t
 		Out[i,]<-rfGIS$selected.model
 		}
 
+
+a<-Out[Out[,1]!='xxx',] 
+b<-data.frame(table(unlist(strsplit(a,' '))))
+b<-b[order(b$Freq),decreasing=T]
+b$Percent<-b$Freq/length(a)
+
 ```
+
+test<-c("aaa + bbb + ccc")
+strsplit(test,' +')
 
 ### Analysis2:  Alternatively we could use varSelRFBoot to bootstrap the analysis
 
@@ -121,7 +130,8 @@ For the Random Forest analysis we need a response variable.  For now just just t
 	
 	#select complete cases
 		#keep<-complete.cases(Pgis,TS_CHLA)
-		keep<-c(1:100)
+		keep<-c(701:800)
+
 	
 	#run rfBoot
 		rfGIS<-varSelRF(Pgis[keep,],TS_CHLA[keep],ntree=NTREE,ntreeIterat=Niterations,
@@ -134,4 +144,7 @@ For the Random Forest analysis we need a response variable.  For now just just t
 		plot(bootGIS)
 ```
 
-
+rf<- varSelRFBoot(Pgis[keep,],TS_CHLA[keep],vars.drop.num = 1,
+											 bootnumber = 2,
+											 usingCluster = FALSE,
+											 srf = rfGIS)
