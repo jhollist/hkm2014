@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<!-- saved from url=(0014)about:internet -->
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<meta http-equiv="x-ua-compatible" content="IE=9" >
+
+<title>Main Question: Given that we have a unique combination of novel data, increased computational facilities, and an expanded geographic scope, what can we add to the classic understanding of the processes that are predictive of chlorophyll <em>a</em> and trophic state in lakes.</title>
+
+<style type="text/css">
+body, td {
+   font-family: sans-serif;
+   background-color: white;
+   font-size: 12px;
+   margin: 8px;
+}
+
+tt, code, pre {
+   font-family: 'DejaVu Sans Mono', 'Droid Sans Mono', 'Lucida Console', Consolas, Monaco, monospace;
+}
+
+h1 { 
+   font-size:2.2em; 
+}
+
+h2 { 
+   font-size:1.8em; 
+}
+
+h3 { 
+   font-size:1.4em; 
+}
+
+h4 { 
+   font-size:1.0em; 
+}
+
+h5 { 
+   font-size:0.9em; 
+}
+
+h6 { 
+   font-size:0.8em; 
+}
+
+a:visited {
+   color: rgb(50%, 0%, 50%);
+}
+
+pre {	
+   margin-top: 0;
+   max-width: 95%;
+   border: 1px solid #ccc;
+   white-space: pre-wrap;
+}
+
+pre code {
+   display: block; padding: 0.5em;
+}
+
+code.r, code.cpp {
+   background-color: #F8F8F8;
+}
+
+table, td, th {
+  border: none;
+}
+
+blockquote {
+   color:#666666;
+   margin:0;
+   padding-left: 1em;
+   border-left: 0.5em #EEE solid;
+}
+
+hr {
+   height: 0px;
+   border-bottom: none;
+   border-top-width: thin;
+   border-top-style: dotted;
+   border-top-color: #999999;
+}
+
+@media print {
+   * { 
+      background: transparent !important; 
+      color: black !important; 
+      filter:none !important; 
+      -ms-filter: none !important; 
+   }
+
+   body { 
+      font-size:12pt; 
+      max-width:100%; 
+   }
+       
+   a, a:visited { 
+      text-decoration: underline; 
+   }
+
+   hr { 
+      visibility: hidden;
+      page-break-before: always;
+   }
+
+   pre, blockquote { 
+      padding-right: 1em; 
+      page-break-inside: avoid; 
+   }
+
+   tr, img { 
+      page-break-inside: avoid; 
+   }
+
+   img { 
+      max-width: 100% !important; 
+   }
+
+   @page :left { 
+      margin: 15mm 20mm 15mm 10mm; 
+   }
+     
+   @page :right { 
+      margin: 15mm 10mm 15mm 20mm; 
+   }
+
+   p, h2, h3 { 
+      orphans: 3; widows: 3; 
+   }
+
+   h2, h3 { 
+      page-break-after: avoid; 
+   }
+}
+
+</style>
+
+
+
+
+
+</head>
+
+<body>
+<h2>Main Question: Given that we have a unique combination of novel data, increased computational facilities, and an expanded geographic scope, what can we add to the classic understanding of the processes that are predictive of chlorophyll <em>a</em> and trophic state in lakes.</h2>
+
+<h3>Initital Predictor variable selection</h3>
+
+<p>We start by selecting the predictor variables. <em>A priori</em> we made the following decisions:</p>
+
+<ol>
+<li><p>There are three water temperature measure based on the profile data for the first 2m of the water column, the mean (TmeanW), the min (TminW) and the max (TmaxW).  We decided to use TmeanW arbitrarily.</p></li>
+<li><p>There are four estimates of growing degree days:  DDs40, DDs45, DDs50, and DDs55.  The number refers to the reference temperature used in the calculation.  It really shouldn&#39;t matter for our purposes so we arbitrarily chose DD45.</p></li>
+<li><p>The NLCD landcover was calculated as a percent and as total area in buffers of 300m, 1500m, and 3000m.  A fourth buffer scaled to the maximum inlake distance was also used.  We decided to use the percent landcover in the 300m (homeowner) and the 3000m buffers for the analysis.  <em>ANALYSIS</em>- as a check look at centroid distance matrix.</p></li>
+<li><p>Turbidity and Secchi provide similar information and either one can be estimated from the other.  Secchi is not accurate in lakes that are clear to the bottom so we choose to use Turbidity only.</p></li>
+<li><p>We also decided to add a new variable for the NP ratio.  This is just a straight weight ratio and not the molecular weight ratio.  </p></li>
+<li><p>If the WSA_ECO9 is a categorical variable with the names of the nine &ldquo;Wadeable Stream Assessment&rdquo; aggregated ecoregions.  If this variable is selected it will need to be converted to dummy variable for the linear analysis.  A new data.frame call &ldquo;WSA9dummies&rdquo; is created for this.</p></li>
+</ol>
+
+<p>This give us two data.frames:</p>
+
+<ol>
+<li> &ldquo;Pall&rdquo; contains the predictor variables (including the categorical variable &ldquo;WSA_ECO9&rdquo;)</li>
+<li>&ldquo;WSA9dummies&rdquo; contains the ecoregion dummy variables.  NOTE: to use this with Pall you need to remove Pall$WSA_ECO9.  For example a data.frame with response variables and the WSA dummies is created with the following code:  Pall1&lt;-data.frame(Pall[,-grep(&ldquo;WSA_ECO9&rdquo;,names(Pall))],WSA9dummies)</li>
+</ol>
+
+<h3>Initital GIS Predictor variable selection</h3>
+
+<p>The Predictor variables in Pall contains a mixture of variables that can be assessed with GIS and  measured water quality variables.  To see if the GIS variables alone can be used we create a new data.frame with just the GIS predictors.</p>
+
+<ol>
+<li> This creates one df named &ldquo;Pgis&rdquo; that includes the location, lake morphmetrics, growing degreee days (DDs45), and the NLCD percents in buffers of 300m and 3000m.</li>
+<li> You can subset this to use buffers of 300m only with this code: Pgis300&lt;-Pgis[,-grep(&ldquo;3000m&rdquo;,names(Pgis))]<br/></li>
+<li> You can subset this to use buffers of 3000m only with this code: Pgis3k&lt;-Pgis[,-grep(&ldquo;300m&rdquo;,names(Pgis))]</li>
+</ol>
+
+<h3>response variable selection</h3>
+
+<p>For the Random Forest analysis we create the  categorical response variable &ldquo;chlaCat&rdquo;.  This variable has three categories:</p>
+
+<ol>
+<li>Low=lakes with Chla concentrations in the first quartile of the Chla distribution</li>
+<li>Med=lakes with Chla concentrations in the second and third quartiles of the Chla distribution</li>
+<li>High=lakes with Chla concentrations in the fourth quartile of the Chla distribution</li>
+</ol>
+
+<pre><code>## chlaCat
+##  LOW  MED HIGH &lt;NA&gt; 
+##  286  570  287    5
+</code></pre>
+
+</body>
+
+</html>
+

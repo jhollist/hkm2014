@@ -158,33 +158,45 @@ For the Random Forest analysis we need a response variable.  For now just just t
   write(kable(summDF),"all_variable_summary.md")
   lapply(Out,write,"all_selected_variables.csv",append=T,ncolumns=10000)
 
+
+a<-Out[Out[,1]!='xxx',] 
+b<-data.frame(table(unlist(strsplit(a,' '))))
+b<-b[order(b$Freq),decreasing=T]
+b$Percent<-b$Freq/length(a)
+
 ```
 
+### Analysis2:  Alternatively we could use varSelRFBoot to bootstrap the analysis
+=======
 ### Analysis3:  Alternatively we could use varSelRFBoot to bootstrap the analysis
 
-Not working so not currently evaulated.
+#Not working so not currently evaulated.
 
-```{r run_varSelRFBoot, echo=FALSE, eval=FALSE, cache=TRUE} 
-#run for all GIS predictors
-	#intial conditions:
-		NTREE<-100 #(1000) number of trees for first run
-		Niterations<-50 #(500) number of trees for subsequent runs
-		dropNum<-2 # number of variables to drop after each iteration
-		numBoot<-2 #number of times to bootrstrap the rf
-	
-	#select complete cases
-		#keep<-complete.cases(Pgis,TS_CHLA)
-		keep<-c(1:100)
-	
-	#run rfBoot
-		rfGIS<-varSelRF(Pgis[keep,],TS_CHLA[keep],ntree=NTREE,ntreeIterat=Niterations,
-												vars.drop.frac=NULL,vars.drop.num=dropNum)  #first run sets initial conditions
-		bootGIS<-varSelRFBoot(Pgis[keep,],TS_CHLA[keep],vars.drop.num=dropNum,
-											 bootnumber=numBoot,usingCluster = FALSE,srf=rfGIS)
-
-		bootGIS
-		summary(bootGIS)
-		plot(bootGIS)
-```
-
-
+# ```{r run_varSelRFBoot, echo=FALSE, eval=FALSE, cache=TRUE} 
+# #run for all GIS predictors
+# 	#intial conditions:
+# 		NTREE<-100 #(1000) number of trees for first run
+# 		Niterations<-50 #(500) number of trees for subsequent runs
+# 		dropNum<-2 # number of variables to drop after each iteration
+# 		numBoot<-2 #number of times to bootrstrap the rf
+# 	
+# 	#select complete cases
+# 		#keep<-complete.cases(Pgis,TS_CHLA)
+# 		keep<-c(701:800)
+# 
+# 	
+# 	#run rfBoot
+# 		rfGIS<-varSelRF(Pgis[keep,],TS_CHLA[keep],ntree=NTREE,ntreeIterat=Niterations,
+# 												vars.drop.frac=NULL,vars.drop.num=dropNum)  #first run sets initial conditions
+# 		bootGIS<-varSelRFBoot(Pgis[keep,],TS_CHLA[keep],vars.drop.num=dropNum,
+# 											 bootnumber=numBoot,usingCluster = FALSE,srf=rfGIS)
+# 
+# 		bootGIS
+# 		summary(bootGIS)
+# 		plot(bootGIS)
+# ```
+# 
+# rf<- varSelRFBoot(Pgis[keep,],TS_CHLA[keep],vars.drop.num = 1,
+# 											 bootnumber = 2,
+# 											 usingCluster = FALSE,
+# 											 srf = rfGIS)
