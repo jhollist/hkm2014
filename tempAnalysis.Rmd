@@ -82,9 +82,14 @@ For the Random Forest analysis we need a response variable.  For now just just t
 ```{r responseSelection, echo=FALSE, cache=FALSE} 
 	TS_CHLA<-hkm2014Data$TS_CHLA
 	table(TS_CHLA,useNA='ifany') #note there are five missing values
+  threeClass<-c(min(hkm2014Data$CHLA,na.rm=T),
+  							quantile(hkm2014Data$CHLA,na.rm=T)[2],
+  							quantile(hkm2014Data$CHLA,na.rm=T)[4],
+  							max(hkm2014Data$CHLA,na.rm=T))	
+	CHLA_3<-cut(hkm2014Data$CHLA,threeClass,c("low","medium","high"),ordered_result=T)
 ```
 
-### Analysis1: GIS VARIABLES: Run varSelRF multiple time to see if the same variables are selected each time.
+### Analysis1: GIS VARIABLES: Run varSelRF multiple time to see if the same variables are selected each time.  All Four TS
 
 
 ```{r run_varSelRF, echo=FALSE, cache=TRUE} 
@@ -166,37 +171,84 @@ b$Percent<-b$Freq/length(a)
 
 ```
 
-### Analysis2:  Alternatively we could use varSelRFBoot to bootstrap the analysis
-=======
-### Analysis3:  Alternatively we could use varSelRFBoot to bootstrap the analysis
+### Analysis3: GIS VARIABLES: Run varSelRF multiple time to see if the same variables are selected each time.  Three CHLA Classes (first quartile, 2nd and 3rd quartile, fourth quartile)
 
-#Not working so not currently evaulated.
 
-# ```{r run_varSelRFBoot, echo=FALSE, eval=FALSE, cache=TRUE} 
-# #run for all GIS predictors
-# 	#intial conditions:
-# 		NTREE<-100 #(1000) number of trees for first run
-# 		Niterations<-50 #(500) number of trees for subsequent runs
-# 		dropNum<-2 # number of variables to drop after each iteration
-# 		numBoot<-2 #number of times to bootrstrap the rf
-# 	
-# 	#select complete cases
-# 		#keep<-complete.cases(Pgis,TS_CHLA)
-# 		keep<-c(701:800)
-# 
-# 	
-# 	#run rfBoot
-# 		rfGIS<-varSelRF(Pgis[keep,],TS_CHLA[keep],ntree=NTREE,ntreeIterat=Niterations,
-# 												vars.drop.frac=NULL,vars.drop.num=dropNum)  #first run sets initial conditions
-# 		bootGIS<-varSelRFBoot(Pgis[keep,],TS_CHLA[keep],vars.drop.num=dropNum,
-# 											 bootnumber=numBoot,usingCluster = FALSE,srf=rfGIS)
-# 
-# 		bootGIS
-# 		summary(bootGIS)
-# 		plot(bootGIS)
-# ```
-# 
-# rf<- varSelRFBoot(Pgis[keep,],TS_CHLA[keep],vars.drop.num = 1,
-# 											 bootnumber = 2,
-# 											 usingCluster = FALSE,
-# 											 srf = rfGIS)
+```{r run_varSelRF, echo=FALSE, cache=TRUE} 
+#run for all GIS predictors
+	#intial conditions:
+		NTREE<-10000 #(10000) number of trees for first run
+		Niterations<-5000 #(5000) number of trees for subsequent runs
+		dropNum<-1 # number of variables to drop after each iteration
+		numRun<-100 #number of times to repeat the rf
+	
+	#select complete cases
+		keep<-complete.cases(Pgis,CHLA_3)
+
+	#run rf
+		Out<-vector("list",numRun)
+			for(i in c(1:numRun)){
+				rfGIS<-varSelRF(Pgis[keep,],CHLA_3[keep],ntree=NTREE,ntreeIterat=Niterations,
+												vars.drop.frac=NULL,vars.drop.num=dropNum)
+		Out[[i]]<-rfGIS$selected.vars
+		save(list=c("i","Out"),file="Pgis.rda")
+		print(i)
+		}
+	
+	#summarize variables
+	summDF<-data.frame()
+	uniqueVar<-unique(unlist(Out))
+  for(i in uniqueVar){
+  	summDF<-rbind(summDF,data.frame(Variable=i,Percent=sum(unlist(Out)%in%i)/numRun))
+  }
+	summDF<-summDF[order(summDF$Percent,decreasing=T),]
+  summDF
+  require(knitr)
+  write(kable(summDF),"gis_variable_summary.md")
+  lapply(Out,write,"gis_selected_variables.csv",append=T,ncolumns=1000)
+
+```
+
+### Analysis4: ALL VARIABLES (GIS+WQ): Run varSelRF multiple time to see if the same variables are selected each time. Three CHLA Classes (first quartile, 2nd and 3rd quartile, fourth quartile)
+
+
+```{r run_varSelRF, echo=FALSE, cache=TRUE} 
+#run for all predictors (GIS + WQ)
+	#intial conditions:
+		NTREE<-10000 #(10000) number of trees for first run
+		Niterations<-5000 #(5000) number of trees for subsequent runs
+		dropNum<-1 # number of variables to drop after each iteration
+		numRun<-100 #number of times to repeat the rf
+	
+	#select complete cases
+		keep<-complete.cases(Pall,CHLA_3)
+
+	#run rf
+		Out<-vector("list",numRun)
+			for(i in c(1:numRun)){
+				rfALL<-varSelRF(Pall[keep,],CHLA_3[keep],ntree=NTREE,ntreeIterat=Niterations,
+												vars.drop.frac=NULL,vars.drop.num=dropNum)
+		Out[[i]]<-rfALL$selected.vars
+		save(list=c("i","Out"),file="Pall.rda")
+		print(i)
+		}
+	
+	#summarize variables
+	summDF<-data.frame()
+	uniqueVar<-unique(unlist(Out))
+  for(i in uniqueVar){
+  	summDF<-rbind(summDF,data.frame(Variable=i,Percent=sum(unlist(Out)%in%i)/numRun))
+  }
+	summDF<-summDF[order(summDF$Percent,decreasing=T),]
+  summDF
+  require(knitr)
+  write(kable(summDF),"all_variable_summary.md")
+  lapply(Out,write,"all_selected_variables.csv",append=T,ncolumns=10000)
+
+
+a<-Out[Out[,1]!='xxx',] 
+b<-data.frame(table(unlist(strsplit(a,' '))))
+b<-b[order(b$Freq),decreasing=T]
+b$Percent<-b$Freq/length(a)
+
+```
