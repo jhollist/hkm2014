@@ -204,8 +204,8 @@ b$Percent<-b$Freq/length(a)
 	summDF<-summDF[order(summDF$Percent,decreasing=T),]
   summDF
   require(knitr)
-  write(kable(summDF),"gis_variable_summary.md")
-  lapply(Out,write,"gis_selected_variables.csv",append=T,ncolumns=1000)
+  write(kable(summDF),"gis_variable_summary_three.md")
+  lapply(Out,write,"gis_selected_variables_three.csv",append=T,ncolumns=1000)
 
 ```
 
@@ -242,8 +242,8 @@ b$Percent<-b$Freq/length(a)
 	summDF<-summDF[order(summDF$Percent,decreasing=T),]
   summDF
   require(knitr)
-  write(kable(summDF),"all_variable_summary.md")
-  lapply(Out,write,"all_selected_variables.csv",append=T,ncolumns=10000)
+  write(kable(summDF),"all_variable_summary_three.md")
+  lapply(Out,write,"all_selected_variables_three.csv",append=T,ncolumns=10000)
 
 
 a<-Out[Out[,1]!='xxx',] 
