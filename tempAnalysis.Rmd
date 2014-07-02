@@ -87,6 +87,10 @@ For the Random Forest analysis we need a response variable.  For now just just t
   							quantile(hkm2014Data$CHLA,na.rm=T)[4],
   							max(hkm2014Data$CHLA,na.rm=T))	
 	CHLA_3<-cut(hkm2014Data$CHLA,threeClass,c("low","medium","high"),ordered_result=T)
+	table(CHLA_3,useNA='ifany')
+	TS_CHLA_2<-TS_CHLA
+  levels(TS_CHLA_2)<-c("Oligo/Meso","Oligo/Meso","Eu/Hyper","Eu/Hyper")
+	table(TS_CHLA_2,useNA='ifany')
 ```
 
 ### Analysis1: GIS VARIABLES: Run varSelRF multiple time to see if the same variables are selected each time.  All Four TS
@@ -122,8 +126,8 @@ For the Random Forest analysis we need a response variable.  For now just just t
 	summDF<-summDF[order(summDF$Percent,decreasing=T),]
   summDF
   require(knitr)
-  write(kable(summDF),"gis_variable_summary.md")
-  lapply(Out,write,"gis_selected_variables.csv",append=T,ncolumns=1000)
+  write(kable(summDF),"gis_variable_summary_ts.md")
+  lapply(Out,write,"gis_selected_variables_ts.csv",append=T,ncolumns=1000)
 
 ```
 
@@ -160,8 +164,8 @@ For the Random Forest analysis we need a response variable.  For now just just t
 	summDF<-summDF[order(summDF$Percent,decreasing=T),]
   summDF
   require(knitr)
-  write(kable(summDF),"all_variable_summary.md")
-  lapply(Out,write,"all_selected_variables.csv",append=T,ncolumns=10000)
+  write(kable(summDF),"all_variable_summary_ts.md")
+  lapply(Out,write,"all_selected_variables_ts.csv",append=T,ncolumns=10000)
 
 
 a<-Out[Out[,1]!='xxx',] 
@@ -209,7 +213,45 @@ b$Percent<-b$Freq/length(a)
 
 ```
 
-### Analysis4: ALL VARIABLES (GIS+WQ): Run varSelRF multiple time to see if the same variables are selected each time. Three CHLA Classes (first quartile, 2nd and 3rd quartile, fourth quartile)
+### Analysis4: GIS VARIABLES: Run varSelRF multiple time to see if the same variables are selected each time.  Two CHLA Classes (oligotrophic/mesotrophic, eutrophic/hypereutrophic)
+
+
+```{r run_varSelRF, echo=FALSE, cache=TRUE} 
+#run for all GIS predictors
+	#intial conditions:
+		NTREE<-10000 #(10000) number of trees for first run
+		Niterations<-5000 #(5000) number of trees for subsequent runs
+		dropNum<-1 # number of variables to drop after each iteration
+		numRun<-100 #number of times to repeat the rf
+	
+	#select complete cases
+		keep<-complete.cases(Pgis,TS_CHLA_2)
+
+	#run rf
+		Out<-vector("list",numRun)
+			for(i in c(1:numRun)){
+				rfGIS<-varSelRF(Pgis[keep,],TS_CHLA_2[keep],ntree=NTREE,ntreeIterat=Niterations,
+												vars.drop.frac=NULL,vars.drop.num=dropNum)
+		Out[[i]]<-rfGIS$selected.vars
+		save(list=c("i","Out"),file="Pgis.rda")
+		print(i)
+		}
+	
+	#summarize variables
+	summDF<-data.frame()
+	uniqueVar<-unique(unlist(Out))
+  for(i in uniqueVar){
+  	summDF<-rbind(summDF,data.frame(Variable=i,Percent=sum(unlist(Out)%in%i)/numRun))
+  }
+	summDF<-summDF[order(summDF$Percent,decreasing=T),]
+  summDF
+  require(knitr)
+  write(kable(summDF),"gis_variable_summary_two.md")
+  lapply(Out,write,"gis_selected_variables_two.csv",append=T,ncolumns=1000)
+
+```
+
+### Analysis5: ALL VARIABLES (GIS+WQ): Run varSelRF multiple time to see if the same variables are selected each time. Three CHLA Classes (first quartile, 2nd and 3rd quartile, fourth quartile)
 
 
 ```{r run_varSelRF, echo=FALSE, cache=TRUE} 
@@ -227,6 +269,50 @@ b$Percent<-b$Freq/length(a)
 		Out<-vector("list",numRun)
 			for(i in c(1:numRun)){
 				rfALL<-varSelRF(Pall[keep,],CHLA_3[keep],ntree=NTREE,ntreeIterat=Niterations,
+												vars.drop.frac=NULL,vars.drop.num=dropNum)
+		Out[[i]]<-rfALL$selected.vars
+		save(list=c("i","Out"),file="Pall.rda")
+		print(i)
+		}
+	
+	#summarize variables
+	summDF<-data.frame()
+	uniqueVar<-unique(unlist(Out))
+  for(i in uniqueVar){
+  	summDF<-rbind(summDF,data.frame(Variable=i,Percent=sum(unlist(Out)%in%i)/numRun))
+  }
+	summDF<-summDF[order(summDF$Percent,decreasing=T),]
+  summDF
+  require(knitr)
+  write(kable(summDF),"all_variable_summary_three.md")
+  lapply(Out,write,"all_selected_variables_three.csv",append=T,ncolumns=10000)
+
+
+a<-Out[Out[,1]!='xxx',] 
+b<-data.frame(table(unlist(strsplit(a,' '))))
+b<-b[order(b$Freq),decreasing=T]
+b$Percent<-b$Freq/length(a)
+
+```
+
+### Analysis6: ALL VARIABLES (GIS+WQ): Run varSelRF multiple time to see if the same variables are selected each time. Two CHLA Classes (oligotrophic/mesotrophic, eutrophic/hypereutrophic)
+
+
+```{r run_varSelRF, echo=FALSE, cache=TRUE} 
+#run for all predictors (GIS + WQ)
+	#intial conditions:
+		NTREE<-10000 #(10000) number of trees for first run
+		Niterations<-5000 #(5000) number of trees for subsequent runs
+		dropNum<-1 # number of variables to drop after each iteration
+		numRun<-100 #number of times to repeat the rf
+	
+	#select complete cases
+		keep<-complete.cases(Pall,TS_CHLA_2)
+
+	#run rf
+		Out<-vector("list",numRun)
+			for(i in c(1:numRun)){
+				rfALL<-varSelRF(Pall[keep,],TS_CHLA_2[keep],ntree=NTREE,ntreeIterat=Niterations,
 												vars.drop.frac=NULL,vars.drop.num=dropNum)
 		Out[[i]]<-rfALL$selected.vars
 		save(list=c("i","Out"),file="Pall.rda")
