@@ -51,9 +51,11 @@ This give us one data.frame:
 
 		#create df by omitting the unwanted variables	
 			Pall<-hkm2014Data[,-omit]  
+      
 
 		#Add a variable for NP ratio
 			Pall$NPratio<-Pall$NTL/Pall$PTL
+      predictors_all<-names(Pall)
 ```
 
 ### Initital GIS Predictor variable selection 
@@ -73,6 +75,7 @@ The Predictor variables in Pall contains a mixture of variables that can be asse
 							grep("WSA",names(Pall),value=TRUE))
 		#create df of all GIS variables
 			Pgis<-Pall[,keep]
+      predictors_gis<-names(Pgis)
 ```
 
 ### response variable selection 
@@ -80,15 +83,12 @@ For the Random Forest analysis we need a response variable.  For now just just t
 
 
 ```{r responseSelection, echo=FALSE, cache=FALSE} 
-	TS_CHLA<-hkm2014Data$TS_CHLA
-	table(TS_CHLA,useNA='ifany') #note there are five missing values
-  threeClass<-c(min(hkm2014Data$CHLA,na.rm=T),
-  							quantile(hkm2014Data$CHLA,na.rm=T)[2],
-  							quantile(hkm2014Data$CHLA,na.rm=T)[4],
-  							max(hkm2014Data$CHLA,na.rm=T))	
-	CHLA_3<-cut(hkm2014Data$CHLA,threeClass,c("low","medium","high"),ordered_result=T)
-	table(CHLA_3,useNA='ifany')
-	TS_CHLA_2<-TS_CHLA
+	TS_CHLA_4<-hkm2014Data$TS_CHLA
+	table(TS_CHLA_4,useNA='ifany') #note there are five missing values
+	TS_CHLA_3<-TS_CHLA_4
+  levels(TS_CHLA_3)<-c("Oligo","Meso/Eu","Meso/Eu","Hyper")
+	table(TS_CHLA_3,useNA='ifany')
+	TS_CHLA_2<-TS_CHLA_4
   levels(TS_CHLA_2)<-c("Oligo/Meso","Oligo/Meso","Eu/Hyper","Eu/Hyper")
 	table(TS_CHLA_2,useNA='ifany')
 ```
