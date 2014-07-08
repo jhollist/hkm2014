@@ -1,6 +1,6 @@
 ```{r setup, include=FALSE, echo=FALSE}
 #opts_chunk$set(dev = 'pdf', fig.width=6, fig.height=4.3)
-#devtools::install_github("hkm","jhollist")
+devtools::install_github("hkm","jhollist")
 library(hkm)
 data(hkm2014Data)
 ```
@@ -92,7 +92,44 @@ Results
 
 ### Variable Selection
 
-- Which variables were selected to include, and why, in the Random Forest.  
+- Which variables were selected to include, and why, in the Random Forest. 
+
+```{r GIS_TS4, echo=FALSE, cache=TRUE}
+gis_ts4<-iterVarSelRF(hkm2014Data[predictors_gis],TS_CHLA_4,numCore=4,100,
+											ntree=10000,ntreeIterat=5000,vars.drop.frac=NULL,
+											vars.drop.num=1,outStr="gis_ts4")
+```
+
+```{r GIS_TS3, cache=TRUE}
+gis_ts3<-iterVarSelRF(hkm2014Data[predictors_gis],TS_CHLA_3,numCore=4,100,
+											ntree=10000,ntreeIterat=5000,vars.drop.frac=NULL,
+											vars.drop.num=1,outStr="gis_ts3")
+```
+
+```{r GIS_TS2, cache=TRUE}
+gis_ts2<-iterVarSelRF(hkm2014Data[predictors_gis],TS_CHLA_2,numCore=4,100,
+											ntree=10000,ntreeIterat=5000,vars.drop.frac=NULL,
+											vars.drop.num=1,outStr="gis_ts2")
+```
+
+```{r ALL_TS4, cache=TRUE}
+all_ts4<-iterVarSelRF(hkm2014Data[predictors_all],TS_CHLA_4,numCore=4,100,
+											ntree=10000,ntreeIterat=5000,vars.drop.frac=NULL,
+											vars.drop.num=1,outStr="all_ts4")
+```
+
+```{r ALL_TS3, cache=TRUE}
+all_ts3<-iterVarSelRF(hkm2014Data[predictors_all],TS_CHLA_3,numCore=4,100,
+											ntree=10000,ntreeIterat=5000,vars.drop.frac=NULL,
+											vars.drop.num=1,outStr="all_ts3")
+```
+
+```{r ALL_TS2, cache=TRUE}
+all_ts2<-iterVarSelRF(hkm2014Data[predictors_all],TS_CHLA_2,numCore=4,100,
+											ntree=10000,ntreeIterat=5000,vars.drop.frac=NULL,
+											vars.drop.num=1,outStr="all_ts2")
+```
+
 - Table. 
 ```{r variableSelectionTable, echo=FALSE}
 ```
