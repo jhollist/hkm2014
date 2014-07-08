@@ -18,7 +18,7 @@ Environmental Determinants of Lake Trophic Status in the Conterminous United Sta
 
 Abstract
 --------
-Productivity of lentic ecosystems has been well studied and predicting the algal community response is known to be largely a function of nitrogen and phosphorus.   Most existing predictive models take advantage of this well studied relationship to predict chlorphyl a and lake trophic state.  While this provides reliable predictions, it requires *in situ* water quality data in order to paramterize the model.  This limits the application of these models to lakes with existing and, more importanly, available water quality data.  To expand our ability to predict in lakes without water quality data, we take advantage of the availability of a large national lakes water quality database, land use/land cover data, lake morphometry data, other universally available data, and modern data mining approaches to build and assess alternative models of lake tropic state that may be more universally applied.  We use random forests and random forest variable selection to identify variables to be used for predicting trophic status and we compare the classification accuracy of a variety of existing and novel models.  Models based on nutrients alone predict trophic state with and average of XX% accuracy.  Models build with universally available data alone are able to correctluy predict trophic state, on average, xx% of the time.  Adding in additional variables to the classic models of Chlorophyl *a* based trophic state improves predictions only by a small percentage.  These results suggest that when *in situ* data are availble, additional variables do not appreciable improve predictions of trophic state.  Additionally, reliable predictions of trophic state are possible without *in situ* data allowing for a much broader application of trophic state models than has been previously applied.  
+Productivity of lentic ecosystems has been well studied and predicting the algal community response is known to be largely a function of nitrogen and phosphorus.   Most existing predictive models take advantage of this well studied relationship to predict chlorphyl a and lake trophic state.  While this provides reliable predictions, it requires *in situ* water quality data in order to paramterize the model.  This limits the application of these models to lakes with existing and, more importanly, available water quality data.  To expand our ability to predict in lakes without water quality data, we take advantage of the availability of a large national lakes water quality database, land use/land cover data, lake morphometry data, other universally available data, and modern data mining approaches to build and assess alternative models of lake tropic state that may be more universally applied.  We use random forests and random forest variable selection to identify variables to be used for predicting trophic status and we compare the classification accuracy of a variety of existing and novel models.  Models based on nutrients alone predict trophic state with and average of XX% accuracy.  Models build with universally available data alone are able to correctly predict trophic state, on average, xx% of the time.  Adding in additional variables to the classic models of Chlorophyl *a* based trophic state improves predictions only by a small percentage.  These results suggest that when *in situ* data are availble, additional variables do not appreciable improve predictions of trophic state.  Additionally, reliable predictions of trophic state are possible without *in situ* data allowing for a much broader application of trophic state models than has been previously applied.  
 
 
 
@@ -94,37 +94,37 @@ Results
 
 - Which variables were selected to include, and why, in the Random Forest. 
 
-```{r GIS_TS4, echo=FALSE, cache=TRUE}
+```{r GIS_TS4, echo=FALSE, eval=TRUE, cache=TRUE}
 gis_ts4<-iterVarSelRF(hkm2014Data[predictors_gis],TS_CHLA_4,numCore=4,100,
 											ntree=10000,ntreeIterat=5000,vars.drop.frac=NULL,
 											vars.drop.num=1,outStr="gis_ts4")
 ```
 
-```{r GIS_TS3, cache=TRUE}
+```{r GIS_TS3, echo=FALSE, eval=FALSE, cache=TRUE}
 gis_ts3<-iterVarSelRF(hkm2014Data[predictors_gis],TS_CHLA_3,numCore=4,100,
 											ntree=10000,ntreeIterat=5000,vars.drop.frac=NULL,
 											vars.drop.num=1,outStr="gis_ts3")
 ```
 
-```{r GIS_TS2, cache=TRUE}
+```{r GIS_TS2, echo=FALSE, eval=FALSE, cache=TRUE}
 gis_ts2<-iterVarSelRF(hkm2014Data[predictors_gis],TS_CHLA_2,numCore=4,100,
 											ntree=10000,ntreeIterat=5000,vars.drop.frac=NULL,
 											vars.drop.num=1,outStr="gis_ts2")
 ```
 
-```{r ALL_TS4, cache=TRUE}
+```{r ALL_TS4, echo=FALSE, eval=FALSE, cache=TRUE}
 all_ts4<-iterVarSelRF(hkm2014Data[predictors_all],TS_CHLA_4,numCore=4,100,
 											ntree=10000,ntreeIterat=5000,vars.drop.frac=NULL,
 											vars.drop.num=1,outStr="all_ts4")
 ```
 
-```{r ALL_TS3, cache=TRUE}
+```{r ALL_TS3, echo=FALSE, eval=FALSE, cache=TRUE}
 all_ts3<-iterVarSelRF(hkm2014Data[predictors_all],TS_CHLA_3,numCore=4,100,
 											ntree=10000,ntreeIterat=5000,vars.drop.frac=NULL,
 											vars.drop.num=1,outStr="all_ts3")
 ```
 
-```{r ALL_TS2, cache=TRUE}
+```{r ALL_TS2, echo=FALSE, eval=FALSE, cache=TRUE}
 all_ts2<-iterVarSelRF(hkm2014Data[predictors_all],TS_CHLA_2,numCore=4,100,
 											ntree=10000,ntreeIterat=5000,vars.drop.frac=NULL,
 											vars.drop.num=1,outStr="all_ts2")
