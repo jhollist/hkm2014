@@ -55,7 +55,9 @@ This give us one data.frame:
 
 		#Add a variable for NP ratio
 			Pall$NPratio<-Pall$NTL/Pall$PTL
+      hkm2014Data$NPratio<-Pall$NPratio
       predictors_all<-names(Pall)
+   
 ```
 
 ### Initital GIS Predictor variable selection 

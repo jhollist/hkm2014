@@ -112,26 +112,26 @@ gis_ts2<-iterVarSelRF(hkm2014Data[predictors_gis],TS_CHLA_2,numCore=4,100,
 											vars.drop.num=1,outStr="gis_ts2",time=TRUE)
 ```
 
-```{r ALL_TS4, echo=FALSE, eval=FALSE, cache=FALSE}
+```{r ALL_TS4, echo=FALSE, eval=TRUE, cache=TRUE}
 all_ts4<-iterVarSelRF(hkm2014Data[predictors_all],TS_CHLA_4,numCore=4,100,
 											ntree=10000,ntreeIterat=5000,vars.drop.frac=NULL,
 											vars.drop.num=1,outStr="all_ts4",time=TRUE)
 ```
 
-```{r ALL_TS3, echo=FALSE, eval=FALSE, cache=FALSE}
+```{r ALL_TS3, echo=FALSE, eval=TRUE, cache=TRUE}
 all_ts3<-iterVarSelRF(hkm2014Data[predictors_all],TS_CHLA_3,numCore=4,100,
 											ntree=10000,ntreeIterat=5000,vars.drop.frac=NULL,
 											vars.drop.num=1,outStr="all_ts3",time=TRUE)
 ```
 
-```{r ALL_TS2, echo=FALSE, eval=FALSE, cache=FALSE}
+```{r ALL_TS2, echo=FALSE, eval=TRUE, cache=TRUE}
 all_ts2<-iterVarSelRF(hkm2014Data[predictors_all],TS_CHLA_2,numCore=4,100,
 											ntree=10000,ntreeIterat=5000,vars.drop.frac=NULL,
 											vars.drop.num=1,outStr="all_ts2",time=TRUE)
 ```
 
 - Table. 
-```{r variableSelectionTable, echo=FALSE}
+```{r variableSelectionTables, echo=FALSE}
 ```
 ```{r variableSelectionFig, echo=FALSE}
 ```
