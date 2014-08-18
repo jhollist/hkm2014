@@ -9,7 +9,8 @@ rf.vsb <- varSelRFBoot(x, cl,vars.drop.num = 1,
 											 bootnumber = 10,
 											 usingCluster = FALSE,
 											 srf = rf.vs1)
-rf.vsb
-summary(rf.vsb)
-plot(rf.vsb)
+
+
+sadfdfddfdf
+add this
 ## End(Not run)
